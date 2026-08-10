@@ -1,0 +1,48 @@
+<form method="post" action="{{ request.path }}" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="{{ form.name.id_for_label }}">الاسم</label>
+    {{ form.name }}
+    {% for error in form.name.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="{{ form.placement.id_for_label }}">الموضع</label>
+      {{ form.placement }}
+      {% for error in form.placement.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="form-group">
+      <label for="{{ form.order.id_for_label }}">الترتيب</label>
+      {{ form.order }}
+      {% for error in form.order.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="{{ form.image.id_for_label }}">الصورة</label>
+    {% if object.image %}
+      <img src="{{ object.image.url }}" alt="" style="height:60px;border-radius:6px;object-fit:cover;margin-bottom:8px;display:block;">
+    {% endif %}
+    {{ form.image }}
+    {% for error in form.image.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+  </div>
+  <div class="form-group">
+    <label for="{{ form.target_url.id_for_label }}">رابط الوجهة</label>
+    {{ form.target_url }}
+    <p class="text-muted" style="font-size:0.82rem;margin-top:4px;">الوجهة التي يفتحها البانر — يفتح في تبويب جديد.</p>
+    {% for error in form.target_url.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+  </div>
+  <div class="form-group">
+    <label for="{{ form.alt_text.id_for_label }}">النص البديل</label>
+    {{ form.alt_text }}
+    {% for error in form.alt_text.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+  </div>
+  <div class="form-group checkbox-row">
+    {{ form.is_active }}
+    <label for="{{ form.is_active.id_for_label }}" style="margin:0">نشط</label>
+    {% for error in form.is_active.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+  </div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">حفظ البانر</button>
+    <a href="{% url 'dashboard:banner_list' %}" class="btn btn-outline">إلغاء</a>
+  </div>
+</form>

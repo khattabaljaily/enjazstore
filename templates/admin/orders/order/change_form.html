@@ -1,0 +1,12 @@
+{% extends "admin/change_form.html" %}
+
+{% block object-tools-items %}
+  {% if original %}
+    <li>
+      <a href="{% url 'dashboard:order_bill' original.pk %}" class="button" target="_blank" rel="noopener">
+        View / print bill
+      </a>
+    </li>
+  {% endif %}
+  {{ block.super }}
+{% endblock %}

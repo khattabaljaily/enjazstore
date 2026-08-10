@@ -1,0 +1,14 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}{% if object %}تعديل البانر{% else %}إضافة بانر{% endif %}{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <h1>{% if object %}تعديل "{{ object.name }}"{% else %}إضافة بانر{% endif %}</h1>
+    <a href="{% url 'dashboard:banner_list' %}" class="btn btn-outline">&rarr; العودة إلى البانرات</a>
+  </div>
+
+  <div class="dash-card" style="max-width:520px;">
+    {% include "dashboard/banners/_form_fields.html" %}
+  </div>
+{% endblock %}

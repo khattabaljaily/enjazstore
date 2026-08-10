@@ -1,0 +1,243 @@
+{% load static %}
+{% load asset_tags %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}إنجاز{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}تسوّق كل ما تحتاجه من إنجاز — إلكترونيات، ملابس، منتجات منزلية، وأكثر، مع الدفع بالتحويل البنكي.{% endblock %}">
+  <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
+
+  <meta property="og:site_name" content="إنجاز">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}إنجاز{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}تسوّق كل ما تحتاجه من إنجاز — إلكترونيات، ملابس، منتجات منزلية، وأكثر، مع الدفع بالتحويل البنكي.{% endblock %}">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="{% block og_image %}{% static 'img/logo/logo.png' %}{% endblock %}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="{% static 'img/logo/favicon.png' %}">
+  <link rel="apple-touch-icon" sizes="152x152" href="{% static 'img/icons/icon-152x152.png' %}">
+  <link rel="apple-touch-icon" sizes="192x192" href="{% static 'img/icons/icon-192x192.png' %}">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="إنجاز">
+  <meta name="theme-color" content="#4338ca">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="{% static_versioned 'css/style.css' %}">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "إنجاز",
+    "url": "{{ request.scheme }}://{{ request.get_host }}/",
+    "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo/logo.png' %}"
+  }
+  </script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <header class="site-header">
+    <div class="container site-header__bar">
+      <a href="{% url 'products:list' %}" class="brand">
+        <img src="{% static 'img/logo/logo.png' %}" alt="إنجاز" class="brand__logo">
+        <span class="brand__name">إنجاز</span>
+      </a>
+
+      <div class="site-nav" id="site-nav">
+        <nav class="main-nav">
+          <a href="{% url 'products:list' %}" class="{% if request.resolver_match.url_name == 'list' %}is-active{% endif %}">المتجر</a>
+        </nav>
+
+        <div class="header-actions">
+          {% if user.is_authenticated %}
+            <div class="user-menu" id="user-menu">
+              <button type="button" class="user-menu__trigger" id="user-menu-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="user-menu-panel">
+                <span class="user-menu__avatar">{{ user.first_name|default:user.username|first|upper }}</span>
+                <span class="user-menu__label">أهلاً، {{ user.first_name|default:user.username }}</span>
+                <svg class="user-menu__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="user-menu__panel" id="user-menu-panel">
+                {% if user.is_staff or user.is_superuser %}
+                  <a href="{% url 'dashboard:home' %}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    لوحة التحكم
+                  </a>
+                {% endif %}
+                <a href="{% url 'accounts:profile' %}">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  حسابي
+                </a>
+                <a href="{% url 'accounts:orders' %}">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+                  طلباتي
+                </a>
+                <a href="{% url 'accounts:wishlist' %}">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  المفضلة
+                </a>
+                <form action="{% url 'accounts:logout' %}" method="post">
+                  {% csrf_token %}
+                  <button type="submit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    تسجيل الخروج
+                  </button>
+                </form>
+              </div>
+            </div>
+          {% else %}
+            <a href="{% url 'accounts:login' %}" class="btn btn-outline btn-sm">تسجيل الدخول</a>
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-sm">إنشاء حساب</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="header-search">
+        <form action="{% url 'products:list' %}" method="get">
+          <input type="search" name="q" placeholder="ابحث عن منتج…" value="{{ request.GET.q }}" aria-label="ابحث عن منتج">
+          <button type="submit" aria-label="بحث">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </button>
+        </form>
+      </div>
+
+      <div class="header-quick-actions">
+        <a href="{% url 'cart:detail' %}" class="cart-link" aria-label="السلة">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          <span class="cart-badge" id="cart-count">{{ cart_total_items|default:0 }}</span>
+        </a>
+        <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="فتح القائمة">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li class="alert alert-{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__top">
+      <div class="site-footer__brand">
+        <a href="{% url 'products:list' %}" class="brand">
+          <img src="{% static 'img/logo/logo.png' %}" alt="إنجاز" class="brand__logo">
+          <span class="brand__name">إنجاز</span>
+        </a>
+        <p class="site-footer__tagline">كل ما تحتاجه في مكان واحد — تسوّق أونلاين وادفع بسهولة عبر التحويل البنكي.</p>
+      </div>
+
+      <div>
+        <div class="site-footer__heading">المتجر</div>
+        <nav class="footer-links">
+          <a href="{% url 'products:list' %}">كل المنتجات</a>
+          <a href="{% url 'cart:detail' %}">السلة</a>
+        </nav>
+      </div>
+
+      <div>
+        <div class="site-footer__heading">الحساب</div>
+        <nav class="footer-links">
+          {% if user.is_authenticated %}
+            <a href="{% url 'accounts:profile' %}">حسابي</a>
+            <a href="{% url 'accounts:orders' %}">طلباتي</a>
+            <a href="{% url 'accounts:wishlist' %}">المفضلة</a>
+          {% else %}
+            <a href="{% url 'accounts:login' %}">تسجيل الدخول</a>
+            <a href="{% url 'accounts:register' %}">إنشاء حساب</a>
+          {% endif %}
+        </nav>
+      </div>
+
+      <div>
+        <div class="site-footer__heading">الشركة</div>
+        <nav class="footer-links">
+          <a href="{% url 'pages:about' %}">من نحن</a>
+          <a href="{% url 'pages:contact' %}">اتصل بنا</a>
+        </nav>
+      </div>
+
+      <div>
+        <div class="site-footer__heading">القانونية</div>
+        <nav class="footer-links">
+          <a href="{% url 'pages:terms' %}">الشروط والأحكام</a>
+          <a href="{% url 'pages:privacy' %}">سياسة الخصوصية</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="container site-footer__bottom">
+      <span>&copy; {% now "Y" %} إنجاز. جميع الحقوق محفوظة.</span>
+      <span>الدفع عبر التحويل البنكي — بنك الخرطوم (بنكك)</span>
+    </div>
+  </footer>
+
+  <div id="toast"></div>
+  {% include 'partials/spinner.html' %}
+
+  <div class="modal-overlay" id="confirm-modal-overlay">
+    <div class="modal-box" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h3 id="confirm-modal-title"></h3>
+        <button type="button" class="modal-close" data-confirm-modal-close aria-label="إغلاق">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-modal-message"></p>
+        <div class="form-actions">
+          <button type="button" class="btn btn-danger" id="confirm-modal-confirm">نعم، متابعة</button>
+          <button type="button" class="btn btn-outline" data-confirm-modal-close>إلغاء</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="notify-modal-overlay">
+    <div class="modal-box" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h3>أعلمني عند توفر المنتج</h3>
+        <button type="button" class="modal-close" data-notify-modal-close aria-label="إغلاق">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="notify-modal-form">
+          <div class="form-group">
+            <label for="notify-modal-email">البريد الإلكتروني</label>
+            <input type="email" id="notify-modal-email" required placeholder="you@example.com">
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">أعلمني</button>
+            <button type="button" class="btn btn-outline" data-notify-modal-close>إلغاء</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CSRF_TOKEN = '{{ csrf_token }}';
+    window.ENJAZ_USER_EMAIL = '{% if user.is_authenticated %}{{ user.email|escapejs }}{% endif %}';
+  </script>
+  <script src="{% static_versioned 'js/spinner.js' %}"></script>
+  <script src="{% static_versioned 'js/cart.js' %}"></script>
+  <script src="{% static_versioned 'js/wishlist.js' %}"></script>
+  <script src="{% static_versioned 'js/confirm-modal.js' %}"></script>
+  <script src="{% static_versioned 'js/notify-stock.js' %}"></script>
+  <script src="{% static_versioned 'js/nav.js' %}"></script>
+  <script src="{% static_versioned 'js/category-slider.js' %}"></script>
+  <script src="{% static_versioned 'js/pwa-install.js' %}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,14 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}{% if object %}تعديل القسم{% else %}إضافة قسم{% endif %}{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <h1>{% if object %}تعديل "{{ object.name }}"{% else %}إضافة قسم{% endif %}</h1>
+    <a href="{% url 'dashboard:category_list' %}" class="btn btn-outline">&rarr; العودة إلى الأقسام</a>
+  </div>
+
+  <div class="dash-card" style="max-width:520px;">
+    {% include "dashboard/categories/_form_fields.html" %}
+  </div>
+{% endblock %}

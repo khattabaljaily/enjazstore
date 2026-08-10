@@ -1,0 +1,72 @@
+{% extends "dashboard/base.html" %}
+{% load humanize %}
+
+{% block page_title %}العملاء{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>العملاء</h1>
+      <p>{{ customers|length }} عميل مسجل.</p>
+    </div>
+  </div>
+
+  <div class="dash-table-wrap">
+    <table class="dash-table" id="customers-table">
+      <thead>
+        <tr><th>الاسم</th><th>البريد الإلكتروني</th><th>الهاتف</th><th>آخر نشاط</th><th>الموقع</th><th>الحالة</th><th class="no-sort"></th></tr>
+      </thead>
+      <tbody>
+        {% for customer in customers %}
+          <tr>
+            <td data-label="الاسم">{{ customer.get_full_name|default:customer.username }}</td>
+            <td data-label="البريد الإلكتروني">{{ customer.email }}</td>
+            <td data-label="الهاتف">{{ customer.phone|default:"—" }}</td>
+            <td data-label="آخر نشاط">
+              {% if customer.last_seen_at %}
+                {{ customer.last_seen_at|naturaltime }}
+              {% else %}
+                لم يسجل الدخول بعد
+              {% endif %}
+            </td>
+            <td data-label="الموقع">{{ customer.last_seen_location|default:"—" }}</td>
+            <td data-label="الحالة">
+              {% if customer.is_active %}
+                <span class="badge badge-active">نشط</span>
+              {% else %}
+                <span class="badge badge-inactive">غير نشط</span>
+              {% endif %}
+            </td>
+            <td class="card-actions">
+              <div class="table-actions">
+                <button type="button" class="btn btn-outline btn-sm"
+                  data-modal-url="{% url 'dashboard:customer_detail' customer.pk %}"
+                  data-modal-title="{{ customer.get_full_name|default:customer.username }}">عرض</button>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
+
+{% block vendor_head %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script>
+  $(function () {
+    $('#customers-table').DataTable({
+      lengthMenu: [20, 50, 100],
+      pageLength: 20,
+      order: [],
+      columnDefs: [{ targets: 'no-sort', orderable: false }],
+      language: { searchPlaceholder: 'ابحث في العملاء…', search: '' },
+    });
+  });
+</script>
+{% endblock %}

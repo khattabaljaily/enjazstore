@@ -1,0 +1,6 @@
+أصناف منخفضة المخزون: {{ variants|length }}
+
+الأصناف التالية وصلت إلى حد المخزون المنخفض أو أقل منه:
+{% for variant in variants %}- {{ variant.product.name }}{% if variant.size or variant.color %} ({{ variant.size }}{% if variant.size and variant.color %} / {% endif %}{{ variant.color }}){% endif %} — متبقٍ {{ variant.stock }}
+{% endfor %}
+إدارة المنتجات: {{ dashboard_url }}

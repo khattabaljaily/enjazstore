@@ -1,0 +1,58 @@
+{% load static %}
+<div id="enjaz-loader" class="enjaz-loader" aria-hidden="true">
+  <div class="enjaz-loader__ring">
+    <div class="enjaz-loader__inner">
+      <img src="{% static 'img/logo/logo.png' %}" alt="" class="enjaz-loader__logo">
+    </div>
+  </div>
+</div>
+<style>
+  .enjaz-loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(30, 27, 75, 0.55);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.18s ease;
+  }
+  .enjaz-loader.is-visible {
+    opacity: 1;
+    visibility: visible;
+  }
+  .enjaz-loader__ring {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: conic-gradient(from 0deg, #4338ca, #f5a524, #16a34a, #4338ca);
+    padding: 4px;
+    animation: enjaz-loader-spin 1s linear infinite;
+  }
+  .enjaz-loader__inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #1e1b4b;
+    display: grid;
+    place-items: center;
+  }
+  .enjaz-loader__logo {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    animation: enjaz-loader-spin-reverse 1s linear infinite;
+  }
+  @keyframes enjaz-loader-spin { to { transform: rotate(360deg); } }
+  @keyframes enjaz-loader-spin-reverse { to { transform: rotate(-360deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    .enjaz-loader__ring, .enjaz-loader__logo { animation: none; }
+  }
+</style>

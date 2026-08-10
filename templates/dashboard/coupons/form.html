@@ -1,0 +1,14 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}{% if object %}تعديل الكوبون{% else %}إضافة كوبون{% endif %}{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <h1>{% if object %}تعديل "{{ object.code }}"{% else %}إضافة كوبون{% endif %}</h1>
+    <a href="{% url 'dashboard:coupon_list' %}" class="btn btn-outline">&rarr; العودة إلى الكوبونات</a>
+  </div>
+
+  <div class="dash-card" style="max-width:520px;">
+    {% include "dashboard/coupons/_form_fields.html" %}
+  </div>
+{% endblock %}

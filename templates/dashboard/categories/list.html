@@ -1,0 +1,88 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}الأقسام{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>الأقسام</h1>
+      <p>{{ categories|length }} قسم.</p>
+    </div>
+    <button type="button" class="btn btn-primary" data-modal-url="{% url 'dashboard:category_create' %}" data-modal-title="إضافة قسم">+ إضافة قسم</button>
+  </div>
+
+  {% if categories %}
+    <div class="dash-table-wrap">
+      <table class="dash-table" id="categories-table">
+        <thead>
+          <tr><th class="no-sort">الأيقونة</th><th>الاسم</th><th>المنتجات</th><th class="no-sort"></th></tr>
+        </thead>
+        <tbody>
+          {% for category in categories %}
+            {% with product_count=category.products.count %}
+            <tr>
+              <td class="no-sort" data-label="الأيقونة">
+                {% if category.icon %}
+                  <span style="display:flex;align-items:center;justify-content:center;height:36px;width:36px;border-radius:10px;background:linear-gradient(135deg,#17153a 0%,#312e81 100%);">
+                    <i class="fa-solid fa-{{ category.icon }}" style="font-size:17px;color:#f5a524;"></i>
+                  </span>
+                {% else %}
+                  <div style="height:36px;width:36px;border-radius:10px;background:var(--color-bg);"></div>
+                {% endif %}
+              </td>
+              <td data-label="الاسم">{{ category.name }}</td>
+              <td data-label="المنتجات">
+                <a href="{% url 'dashboard:product_list' %}?category={{ category.slug }}" class="table-link">{{ product_count }} <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              </td>
+              <td class="card-actions">
+                <div class="table-actions">
+                  <button type="button" class="btn btn-outline btn-sm"
+                    data-modal-url="{% url 'dashboard:category_edit' category.pk %}" data-modal-title="تعديل القسم">تعديل</button>
+                  {% if user.is_superuser %}
+                    <button type="button" class="btn btn-danger btn-sm"
+                      data-modal-confirm
+                      data-modal-url="{% url 'dashboard:category_delete' category.pk %}"
+                      data-modal-title="حذف القسم؟"
+                      {% if product_count %}
+                        data-modal-message="لا يزال قسم &quot;{{ category.name }}&quot; يحتوي على {{ product_count }} منتج. انقلها أو احذفها أولاً — لا يمكن حذف الأقسام المستخدَمة."
+                        data-modal-confirm-label="حسنًا"
+                      {% else %}
+                        data-modal-message="حذف &quot;{{ category.name }}&quot;؟ لا يمكن التراجع عن هذا الإجراء."
+                        data-modal-confirm-label="نعم، احذف"
+                      {% endif %}>حذف</button>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endwith %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="dash-empty">
+      <p>لا توجد أقسام بعد.</p>
+      <button type="button" class="btn btn-primary" data-modal-url="{% url 'dashboard:category_create' %}" data-modal-title="إضافة قسم">أضف أول قسم</button>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block vendor_head %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script>
+  $(function () {
+    $('#categories-table').DataTable({
+      lengthMenu: [20, 50, 100],
+      pageLength: 20,
+      order: [],
+      columnDefs: [{ targets: 'no-sort', orderable: false }],
+      language: { searchPlaceholder: 'ابحث في الأقسام…', search: '' },
+    });
+  });
+</script>
+{% endblock %}

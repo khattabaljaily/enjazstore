@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load price_tags %}
+
+{% block title %}الطلب #{{ order.id }} · إنجاز{% endblock %}
+
+{% block content %}
+  <div class="page">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <h1 class="section-title">الطلب #{{ order.id }}</h1>
+      <a href="{% url 'orders:bill' order.guest_token %}" class="btn btn-outline btn-sm">عرض / طباعة الفاتورة</a>
+    </div>
+
+    <div class="checkout-layout">
+      <div class="checkout-card">
+        <h2 style="font-size:1.05rem">المنتجات</h2>
+        {% for item in order.items.all %}
+          <div class="order-line">
+            <span class="order-line__label">{{ item.quantity }} &times; {{ item.product_name }}{% if item.variant_label %} ({{ item.variant_label }}){% endif %}</span>
+            <span class="order-line__amount">{{ item.subtotal|money }} ج.س</span>
+          </div>
+        {% endfor %}
+        <div class="summary-row total">
+          <span>الإجمالي</span>
+          <span>{{ order.total|money }} ج.س</span>
+        </div>
+      </div>
+
+      <div class="order-list-card">
+        <h2 style="font-size:1.05rem">الحالة</h2>
+        <p><span class="badge badge-{{ order.status }}">{{ order.get_status_display }}</span></p>
+
+        {% if order.tracking_number %}
+          <p class="text-muted" style="margin-top:8px">
+            رقم التتبع: <strong>{{ order.tracking_number }}</strong>{% if order.tracking_carrier %} عبر {{ order.tracking_carrier }}{% endif %}
+          </p>
+        {% endif %}
+
+        {% if order.payment %}
+          <h2 style="font-size:1.05rem;margin-top:20px">الدفع</h2>
+          <p class="text-muted">
+            <span class="badge badge-cod">تحويل بنكي</span>
+            &middot; {{ order.payment.get_status_display }}
+          </p>
+        {% endif %}
+
+        <h2 style="font-size:1.05rem;margin-top:20px">الشحن إلى</h2>
+        <p class="text-muted">
+          {{ order.full_name }}<br>
+          {{ order.address }}, {{ order.city }}<br>
+          {{ order.phone }}
+        </p>
+
+        {% if user.is_authenticated and order.user_id == user.id %}
+          {% if order.is_cancellable or open_return_request or order.status == 'delivered' %}
+            <h2 style="font-size:1.05rem;margin-top:20px">إدارة الطلب</h2>
+          {% endif %}
+
+          {% if order.is_cancellable %}
+            <form method="post" action="{% url 'orders:cancel' order.id %}"
+              data-confirm-submit data-confirm-title="إلغاء الطلب؟"
+              data-confirm-message="هل تريد إلغاء هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء."
+              data-confirm-label="نعم، إلغاء الطلب">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline btn-block">إلغاء الطلب</button>
+            </form>
+          {% endif %}
+
+          {% if open_return_request %}
+            <p class="text-muted" style="font-size:0.88rem;margin-top:10px">
+              طلب الإرجاع: <span class="badge badge-{{ open_return_request.status }}">{{ open_return_request.get_status_display }}</span>
+            </p>
+          {% elif order.status == 'delivered' %}
+            <a href="{% url 'orders:request_return' order.id %}" class="btn btn-outline btn-block" style="margin-top:10px">
+              طلب إرجاع / الإبلاغ عن مشكلة
+            </a>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

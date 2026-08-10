@@ -1,0 +1,90 @@
+{% load price_tags %}
+<div style="text-align:right;margin-bottom:12px;">
+  <a href="{% url 'dashboard:order_bill' order.pk %}" class="btn btn-primary btn-sm" target="_blank" rel="noopener">عرض / طباعة الفاتورة</a>
+</div>
+
+<div class="modal-order-items">
+  <div class="dash-table-wrap" style="border:none;padding:0;">
+    <table class="dash-table">
+      <thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead>
+      <tbody>
+        {% for item in order.items.all %}
+          <tr>
+            <td class="wrap" data-label="المنتج">{{ item.product_name }}{% if item.variant_label %} <span class="text-muted">({{ item.variant_label }})</span>{% endif %}</td>
+            <td data-label="الكمية">{{ item.quantity }}</td>
+            <td data-label="السعر">{{ item.unit_price|money }} ج.س</td>
+            <td data-label="الإجمالي">{{ item.subtotal|money }} ج.س</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-order-total">الإجمالي: {{ order.total|money }} ج.س</div>
+</div>
+
+<form method="post" action="{{ request.path }}">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="{{ form.status.id_for_label }}">الحالة</label>
+    {{ form.status }}
+    {% for error in form.status.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+  </div>
+  <div class="form-group">
+    <label for="{{ form.tracking_carrier.id_for_label }}">شركة الشحن</label>
+    {{ form.tracking_carrier }}
+  </div>
+  <div class="form-group">
+    <label for="{{ form.tracking_number.id_for_label }}">رقم التتبع</label>
+    {{ form.tracking_number }}
+  </div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary btn-sm">تحديث الحالة</button>
+  </div>
+</form>
+
+{% if order.payment %}
+  <div class="modal-section">
+    <h4>الدفع</h4>
+    <p class="text-muted" style="font-size:0.88rem;">
+      <strong>تحويل بنكي</strong> &middot; <span class="badge badge-{{ order.payment.status }}">{{ order.payment.get_status_display }}</span>
+    </p>
+    {% if order.payment.receipt_image %}
+      <a href="{{ order.payment.receipt_image.url }}" target="_blank" rel="noopener">
+        <img src="{{ order.payment.receipt_image.url }}" alt="إيصال التحويل" style="max-width:220px;border-radius:8px;border:1px solid var(--color-border);margin:8px 0;">
+      </a>
+    {% else %}
+      <p class="text-muted" style="font-size:0.85rem;">لم يتم رفع إيصال تحويل لهذا الطلب.</p>
+    {% endif %}
+    {% if order.payment.status != 'paid' %}
+      <form method="post" action="{% url 'dashboard:payment_confirm' order.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary btn-sm">تأكيد استلام التحويل</button>
+      </form>
+    {% endif %}
+  </div>
+{% endif %}
+
+<div class="modal-section">
+  <h4>العميل</h4>
+  <p class="text-muted" style="font-size:0.88rem;line-height:1.7">
+    {{ order.full_name }}<br>
+    {{ order.email }}<br>
+    {{ order.phone }}<br>
+    {{ order.address }}, {{ order.city }}
+  </p>
+</div>
+
+<div class="modal-section">
+  <h4>المرتجعات</h4>
+  {% for r in order.return_requests.all %}
+    <p style="font-size:0.85rem;margin-bottom:8px;">
+      <button type="button" class="link-inline" data-modal-url="{% url 'dashboard:return_detail' r.pk %}" data-modal-title="طلب إرجاع #{{ r.id }}">#{{ r.id }}</button>
+      &middot; {{ r.get_reason_display }}
+      &middot; <span class="badge badge-{{ r.status }}">{{ r.get_status_display }}</span>
+    </p>
+  {% empty %}
+    <p class="text-muted" style="font-size:0.85rem;">لا توجد طلبات إرجاع لهذا الطلب حتى الآن.</p>
+  {% endfor %}
+  <button type="button" class="btn btn-outline btn-sm" style="margin-top:6px"
+    data-modal-url="{% url 'dashboard:return_create' order.pk %}" data-modal-title="تسجيل إرجاع — الطلب #{{ order.id }}">+ تسجيل إرجاع</button>
+</div>

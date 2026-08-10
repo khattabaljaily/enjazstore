@@ -1,0 +1,204 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block page_title %}{% if product %}تعديل المنتج{% else %}إضافة منتج{% endif %}{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>{% if product %}تعديل "{{ product.name }}"{% else %}إضافة منتج{% endif %}</h1>
+    </div>
+    <a href="{% url 'dashboard:product_list' %}" class="btn btn-outline">&rarr; العودة إلى المنتجات</a>
+  </div>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="dash-card">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label for="{{ form.name.id_for_label }}">اسم المنتج</label>
+          {{ form.name }}
+          {% for error in form.name.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.category.id_for_label }}">القسم</label>
+          {{ form.category }}
+          {% for error in form.category.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.price.id_for_label }}">السعر (ج.س)</label>
+          {{ form.price }}
+          {% for error in form.price.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.condition.id_for_label }}">الحالة</label>
+          {{ form.condition }}
+          {% for error in form.condition.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.warranty_days.id_for_label }}">الضمان (أيام)</label>
+          {{ form.warranty_days }}
+          <span class="helptext">اتركه فارغًا إذا كان هذا المنتج بلا ضمان. للمنتجات المستعملة، اجعلها فترة قصيرة (7-30 يومًا).</span>
+          {% for error in form.warranty_days.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+        </div>
+        <div class="form-group full">
+          <label for="{{ form.description.id_for_label }}">الوصف</label>
+          {{ form.description }}
+        </div>
+        <div class="form-group checkbox-row">
+          {{ form.is_active }}
+          <label for="{{ form.is_active.id_for_label }}" style="margin:0">ظاهر في المتجر</label>
+        </div>
+        <div class="form-group checkbox-row">
+          {{ form.is_featured }}
+          <label for="{{ form.is_featured.id_for_label }}" style="margin:0">إظهار شارة "الأكثر مبيعًا"</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="formset-block">
+      <div class="formset-head">
+        <div>
+          <h3>الصور</h3>
+          <p>أفلت عدة صور دفعة واحدة، أو انقر أدناه للتصفح. تُستخدم الصورة الأولى كصورة غلاف المنتج.</p>
+        </div>
+      </div>
+
+      <label class="image-multi-dropzone" id="images-multi-dropzone">
+        <input type="file" id="images-multi-input" accept="image/*" multiple>
+        <svg class="image-dropzone__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"></path><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"></path></svg>
+        <span>اسحب وأفلت الصور هنا، أو انقر لرفع عدة صور</span>
+      </label>
+
+      {{ image_formset.management_form }}
+      <div class="image-formset" data-formset="images">
+        {% for image_form in image_formset %}
+          <div class="image-row" data-formset-row>
+            {% for hidden in image_form.hidden_fields %}{{ hidden }}{% endfor %}
+            <div class="image-dropzone{% if image_form.instance.pk and image_form.instance.image %} has-image{% endif %}"
+              {% if image_form.instance.pk and image_form.instance.image %}style="background-image:url('{{ image_form.instance.image.url }}')"{% endif %}>
+              {{ image_form.image }}
+              <div class="image-dropzone__overlay">
+                <svg class="image-dropzone__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"></path><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"></path></svg>
+                <span>لا توجد صورة بعد</span>
+              </div>
+            </div>
+            <span class="image-dropzone__filename"></span>
+            <div class="image-row__fields">
+              <div class="form-group">
+                <label>النص البديل</label>
+                {{ image_form.alt_text }}
+              </div>
+              <div class="form-group checkbox-row">
+                {{ image_form.is_primary }}
+                <label style="margin:0">الصورة الرئيسية</label>
+              </div>
+              {% if image_form.instance.pk %}
+                <label class="delete-row-field">{{ image_form.DELETE }} إزالة هذه الصورة</label>
+              {% else %}
+                <button type="button" class="link-remove-row" data-remove-row>إزالة الصف</button>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <template id="images-empty-form">
+        <div class="image-row" data-formset-row>
+          <div class="image-dropzone">
+            {{ image_formset.empty_form.image }}
+            <div class="image-dropzone__overlay">
+              <svg class="image-dropzone__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"></path><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"></path></svg>
+              <span>لا توجد صورة بعد</span>
+            </div>
+          </div>
+          <span class="image-dropzone__filename"></span>
+          <div class="image-row__fields">
+            <div class="form-group">
+              <label>النص البديل</label>
+              {{ image_formset.empty_form.alt_text }}
+            </div>
+            <div class="form-group checkbox-row">
+              {{ image_formset.empty_form.is_primary }}
+              <label style="margin:0">الصورة الرئيسية</label>
+            </div>
+            <button type="button" class="link-remove-row" data-remove-row>إزالة الصف</button>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <div class="formset-block">
+      <div class="formset-head">
+        <div>
+          <h3>المتغيرات</h3>
+          <p>كل توليفة مقاس/لون تحتاج رمز مخزون (SKU) وكمية مخزون خاصة بها.</p>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" data-add-row="variants">+ إضافة متغير</button>
+      </div>
+      {{ variant_formset.management_form }}
+      <div data-formset="variants">
+        {% for variant_form in variant_formset %}
+          <div class="formset-row" data-formset-row>
+            {% for hidden in variant_form.hidden_fields %}{{ hidden }}{% endfor %}
+            <div class="form-group">
+              <label>المقاس</label>
+              {{ variant_form.size }}
+            </div>
+            <div class="form-group">
+              <label>اللون</label>
+              {{ variant_form.color }}
+            </div>
+            <div class="form-group">
+              <label>رمز المخزون (SKU)</label>
+              {{ variant_form.sku }}
+              {% for error in variant_form.sku.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="form-group">
+              <label>المخزون</label>
+              {{ variant_form.stock }}
+            </div>
+            <div class="form-group">
+              <label>سعر مخصص</label>
+              {{ variant_form.price_override }}
+            </div>
+            {% if variant_form.instance.pk %}
+              <label class="delete-row-field">{{ variant_form.DELETE }} إزالة</label>
+            {% else %}
+              <button type="button" class="link-remove-row" data-remove-row>إزالة الصف</button>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+      <template id="variants-empty-form">
+        <div class="formset-row" data-formset-row>
+          <div class="form-group">
+            <label>المقاس</label>
+            {{ variant_formset.empty_form.size }}
+          </div>
+          <div class="form-group">
+            <label>اللون</label>
+            {{ variant_formset.empty_form.color }}
+          </div>
+          <div class="form-group">
+            <label>رمز المخزون (SKU)</label>
+            {{ variant_formset.empty_form.sku }}
+          </div>
+          <div class="form-group">
+            <label>المخزون</label>
+            {{ variant_formset.empty_form.stock }}
+          </div>
+          <div class="form-group">
+            <label>سعر مخصص</label>
+            {{ variant_formset.empty_form.price_override }}
+          </div>
+          <button type="button" class="link-remove-row" data-remove-row>إزالة الصف</button>
+        </div>
+      </template>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">حفظ المنتج</button>
+      <a href="{% url 'dashboard:product_list' %}" class="btn btn-outline">إلغاء</a>
+    </div>
+  </form>
+{% endblock %}

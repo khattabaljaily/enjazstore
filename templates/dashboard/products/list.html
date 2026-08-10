@@ -1,0 +1,104 @@
+{% extends "dashboard/base.html" %}
+{% load price_tags %}
+
+{% block page_title %}المنتجات{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>المنتجات</h1>
+      <p>{{ products|length }} منتج في متجرك.</p>
+    </div>
+    <a href="{% url 'dashboard:product_create' %}" class="btn btn-primary">+ إضافة منتج</a>
+  </div>
+
+  <form method="get" class="filter-bar">
+    <select name="category" onchange="this.form.submit()">
+      <option value="">جميع الأقسام</option>
+      {% for c in categories %}
+        <option value="{{ c.slug }}" {% if selected_category == c.slug %}selected{% endif %}>{{ c.name }}</option>
+      {% endfor %}
+    </select>
+    {% if selected_category %}<button type="submit" class="btn btn-outline btn-sm">تصفية</button>{% endif %}
+  </form>
+
+  {% if products %}
+    <div class="dash-table-wrap">
+      <table class="dash-table" id="products-table">
+        <thead>
+          <tr>
+            <th class="no-sort"></th>
+            <th>الاسم</th>
+            <th>القسم</th>
+            <th>السعر</th>
+            <th>المخزون</th>
+            <th>الحالة</th>
+            <th class="no-sort"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in products %}
+            <tr>
+              <td class="no-sort" data-label="الصورة">
+                {% if product.main_image %}
+                  <img src="{{ product.main_image.image.url }}" class="table-thumb">
+                {% else %}
+                  <div class="table-thumb"></div>
+                {% endif %}
+              </td>
+              <td class="wrap" data-label="الاسم">{{ product.name }}</td>
+              <td data-label="القسم">{{ product.category.name }}</td>
+              <td data-label="السعر">ج.س {{ product.price|money }}</td>
+              <td data-label="المخزون">{{ product.total_stock }}</td>
+              <td data-label="الحالة">
+                {% if product.is_active %}
+                  <span class="badge badge-active">نشط</span>
+                {% else %}
+                  <span class="badge badge-inactive">مخفي</span>
+                {% endif %}
+              </td>
+              <td class="card-actions">
+                <div class="table-actions">
+                  <a href="{% url 'dashboard:product_edit' product.pk %}" class="btn btn-outline btn-sm">تعديل</a>
+                  {% if user.is_superuser %}
+                    <button type="button" class="btn btn-danger btn-sm"
+                      data-modal-confirm
+                      data-modal-url="{% url 'dashboard:product_delete' product.pk %}"
+                      data-modal-title="حذف المنتج؟"
+                      data-modal-message="حذف &quot;{{ product.name }}&quot;؟ لا يمكن التراجع عن هذا الإجراء."
+                      data-modal-confirm-label="نعم، احذف">حذف</button>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="dash-empty">
+      <p>لا توجد منتجات.</p>
+      <a href="{% url 'dashboard:product_create' %}" class="btn btn-primary">أضف أول منتج</a>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block vendor_head %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script>
+  $(function () {
+    $('#products-table').DataTable({
+      lengthMenu: [20, 50, 100],
+      pageLength: 20,
+      order: [],
+      columnDefs: [{ targets: 'no-sort', orderable: false }],
+      language: { searchPlaceholder: 'ابحث في المنتجات…', search: '' },
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "dashboard/base.html" %}
+{% load price_tags %}
+
+{% block page_title %}الطلبات{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>الطلبات</h1>
+      <p>{{ orders|length }} طلب.</p>
+    </div>
+  </div>
+
+  <form method="get" class="filter-bar">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">جميع الحالات</option>
+      {% for value, label in status_choices %}
+        <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    {% if selected_status %}<button type="submit" class="btn btn-outline btn-sm">تصفية</button>{% endif %}
+  </form>
+
+  {% if orders %}
+    <div class="dash-table-wrap">
+      <table class="dash-table" id="orders-table">
+        <thead>
+          <tr><th>الطلب</th><th>العميل</th><th>الهاتف</th><th>الحالة</th><th>الإجمالي</th><th>التاريخ</th><th class="no-sort"></th></tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+            <tr>
+              <td data-label="الطلب">#{{ order.id }}</td>
+              <td data-label="العميل">{{ order.full_name }}</td>
+              <td data-label="الهاتف">{{ order.phone }}</td>
+              <td data-label="الحالة"><span class="badge badge-{{ order.status }}">{{ order.get_status_display }}</span></td>
+              <td data-label="الإجمالي">ج.س {{ order.total|money }}</td>
+              <td data-label="التاريخ">{{ order.created_at|date:"d M Y" }}</td>
+              <td class="card-actions">
+                <div class="table-actions">
+                  <button type="button" class="btn btn-outline btn-sm"
+                    data-modal-url="{% url 'dashboard:order_detail' order.pk %}" data-modal-title="الطلب #{{ order.id }}">تعديل</button>
+                  {% if user.is_superuser %}
+                    <button type="button" class="btn btn-danger btn-sm"
+                      data-modal-confirm
+                      data-modal-url="{% url 'dashboard:order_delete' order.pk %}"
+                      data-modal-title="حذف الطلب؟"
+                      data-modal-message="حذف الطلب #{{ order.id }} الخاص بـ &quot;{{ order.full_name }}&quot;؟ لا يمكن التراجع عن هذا الإجراء."
+                      data-modal-confirm-label="نعم، احذف">حذف</button>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="dash-empty"><p>لا توجد طلبات.</p></div>
+  {% endif %}
+{% endblock %}
+
+{% block vendor_head %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script>
+  $(function () {
+    $('#orders-table').DataTable({
+      lengthMenu: [20, 50, 100],
+      pageLength: 20,
+      order: [[5, 'desc']],
+      columnDefs: [{ targets: 'no-sort', orderable: false }],
+      language: { searchPlaceholder: 'Search orders…', search: '' },
+    });
+  });
+</script>
+{% endblock %}

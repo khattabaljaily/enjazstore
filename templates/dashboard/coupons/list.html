@@ -1,0 +1,83 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}الكوبونات{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>الكوبونات</h1>
+      <p>{{ coupons|length }} كوبون.</p>
+    </div>
+    <button type="button" class="btn btn-primary" data-modal-url="{% url 'dashboard:coupon_create' %}" data-modal-title="إضافة كوبون">+ إضافة كوبون</button>
+  </div>
+
+  {% if coupons %}
+    <div class="dash-table-wrap">
+      <table class="dash-table" id="coupons-table">
+        <thead>
+          <tr><th>الرمز</th><th>قيمة الخصم</th><th>الاستخدام</th><th>الحدود</th><th>صالح حتى</th><th>الحالة</th><th class="no-sort"></th></tr>
+        </thead>
+        <tbody>
+          {% for coupon in coupons %}
+            <tr>
+              <td data-label="الرمز"><strong>{{ coupon.code }}</strong></td>
+              <td data-label="قيمة الخصم">ج.س {{ coupon.amount }}</td>
+              <td data-label="الاستخدام">{{ coupon.redemption_count }}{% if coupon.max_redemptions %} / {{ coupon.max_redemptions }}{% endif %}</td>
+              <td data-label="الحدود">
+                {% if coupon.minimum_order_amount %}حد أدنى ج.س {{ coupon.minimum_order_amount }}<br>{% endif %}
+                {% if coupon.max_redemptions_per_customer %}{{ coupon.max_redemptions_per_customer }} لكل عميل{% endif %}
+              </td>
+              <td data-label="صالح حتى">{{ coupon.valid_until|date:"d M Y"|default:"—" }}</td>
+              <td data-label="الحالة">
+                {% if coupon.is_active %}
+                  <span class="badge badge-active">نشط</span>
+                {% else %}
+                  <span class="badge badge-inactive">غير نشط</span>
+                {% endif %}
+              </td>
+              <td class="card-actions">
+                <div class="table-actions">
+                  <button type="button" class="btn btn-outline btn-sm"
+                    data-modal-url="{% url 'dashboard:coupon_edit' coupon.pk %}" data-modal-title="تعديل الكوبون">تعديل</button>
+                  {% if user.is_superuser %}
+                    <button type="button" class="btn btn-danger btn-sm"
+                      data-modal-confirm
+                      data-modal-url="{% url 'dashboard:coupon_delete' coupon.pk %}"
+                      data-modal-title="حذف الكوبون؟"
+                      data-modal-message="حذف &quot;{{ coupon.code }}&quot;؟ لا يمكن التراجع عن هذا الإجراء."
+                      data-modal-confirm-label="نعم، احذف">حذف</button>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="dash-empty">
+      <p>لا توجد كوبونات بعد.</p>
+      <button type="button" class="btn btn-primary" data-modal-url="{% url 'dashboard:coupon_create' %}" data-modal-title="إضافة كوبون">أضف أول كوبون</button>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block vendor_head %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script>
+  $(function () {
+    $('#coupons-table').DataTable({
+      lengthMenu: [20, 50, 100],
+      pageLength: 20,
+      order: [],
+      columnDefs: [{ targets: 'no-sort', orderable: false }],
+      language: { searchPlaceholder: 'ابحث في الكوبونات…', search: '' },
+    });
+  });
+</script>
+{% endblock %}

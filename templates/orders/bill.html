@@ -1,0 +1,103 @@
+{% load static %}
+{% load asset_tags %}
+{% load price_tags %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فاتورة · الطلب #{{ order.id }} · إنجاز</title>
+  <link rel="icon" href="{% static 'img/logo/logo.png' %}">
+  <link rel="stylesheet" href="{% static_versioned 'css/style.css' %}">
+</head>
+<body class="bill-page">
+  <div class="bill-toolbar no-print">
+    <a href="{{ back_url }}" class="btn btn-outline btn-sm">&rarr; رجوع</a>
+    <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">طباعة / حفظ كـ PDF</button>
+  </div>
+
+  <div class="bill-sheet">
+    <div class="bill-header">
+      <div class="bill-header__brand">
+        <img src="{% static 'img/logo/logo.png' %}" alt="إنجاز" class="bill-header__logo">
+        <div>
+          <div class="bill-header__name">إنجاز</div>
+          <div class="bill-header__tagline">كل ما تحتاجه، على بُعد نقرة</div>
+        </div>
+      </div>
+      <div class="bill-header__meta">
+        <div class="bill-header__title">فاتورة</div>
+        <div>الطلب #{{ order.id }}</div>
+        <div>{{ order.created_at|date:"d M Y, H:i" }}</div>
+      </div>
+    </div>
+
+    <div class="bill-parties">
+      <div>
+        <div class="bill-label">الفاتورة باسم</div>
+        <div class="bill-value">
+          {{ order.full_name }}<br>
+          {{ order.address }}, {{ order.city }}<br>
+          {{ order.phone }}<br>
+          {{ order.email }}
+        </div>
+      </div>
+      <div>
+        <div class="bill-label">الدفع والحالة</div>
+        <div class="bill-value">
+          {% if order.payment %}تحويل بنكي &middot; {{ order.payment.get_status_display }}{% else %}لم يُسجَّل بعد{% endif %}<br>
+          حالة الطلب: {{ order.get_status_display }}
+          {% if order.tracking_number %}<br>رقم التتبع: {{ order.tracking_number }}{% if order.tracking_carrier %} عبر {{ order.tracking_carrier }}{% endif %}{% endif %}
+        </div>
+      </div>
+    </div>
+
+    <table class="bill-table">
+      <thead>
+        <tr>
+          <th>المنتج</th>
+          <th>الحالة</th>
+          <th>الضمان</th>
+          <th>الكمية</th>
+          <th>سعر الوحدة</th>
+          <th>المجموع الفرعي</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in order.items.all %}
+          <tr>
+            <td>{{ item.product_name }}{% if item.variant_label %} <span class="text-muted">({{ item.variant_label }})</span>{% endif %}</td>
+            <td>{{ item.get_condition_display }}</td>
+            <td>{% if item.warranty_days %}{{ item.warranty_days }} يوم{% else %}&mdash;{% endif %}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.unit_price|money }} ج.س</td>
+            <td>{{ item.subtotal|money }} ج.س</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="bill-totals">
+      {% if order.discount_total %}
+        <div class="bill-totals__row">
+          <span>المجموع الفرعي</span>
+          <span>{{ subtotal|money }} ج.س</span>
+        </div>
+        <div class="bill-totals__row">
+          <span>الخصم{% if order.coupon_code %} ({{ order.coupon_code }}){% endif %}</span>
+          <span>&minus;{{ order.discount_total|money }} ج.س</span>
+        </div>
+      {% endif %}
+      <div class="bill-totals__row bill-totals__row--total">
+        <span>الإجمالي</span>
+        <span>{{ order.total|money }} ج.س</span>
+      </div>
+    </div>
+
+    <div class="bill-footer">
+      <p>شكراً لتسوقك مع إنجاز.</p>
+      <p class="bill-footer__muted">يمكنك إعادة طباعة هذه الفاتورة في أي وقت من صفحة طلبك. تمت الطباعة في {% now "d M Y, H:i" %}.</p>
+    </div>
+  </div>
+</body>
+</html>

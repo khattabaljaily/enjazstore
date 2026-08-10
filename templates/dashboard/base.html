@@ -1,0 +1,138 @@
+{% load static %}
+{% load asset_tags %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}لوحة التحكم{% endblock %} · إنجاز</title>
+  <link rel="icon" href="{% static 'img/logo/favicon.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  {% block vendor_head %}{% endblock %}
+  <link rel="stylesheet" href="{% static_versioned 'css/dashboard.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="dash-body">
+  <div class="dash-shell">
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+    <aside class="dash-sidebar" id="dash-sidebar">
+      <div class="dash-sidebar__top">
+        <a href="{% url 'dashboard:home' %}" class="dash-sidebar__brand">
+          <img src="{% static 'img/logo/logo.png' %}" alt="إنجاز">
+          <span>إنجاز</span>
+        </a>
+        <div class="dash-sidebar__top-actions">
+          <a href="{% url 'products:list' %}" class="dash-sidebar__icon-link" title="عرض المتجر" aria-label="عرض المتجر">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+          <form action="{% url 'accounts:logout' %}" method="post" class="dash-sidebar__icon-form">
+            {% csrf_token %}
+            <button type="submit" class="dash-sidebar__icon-link" title="تسجيل الخروج" aria-label="تسجيل الخروج">
+              <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <nav class="dash-nav">
+        <a href="{% url 'dashboard:home' %}" class="{% if request.resolver_match.url_name == 'home' %}is-active{% endif %}">
+          <span class="dash-nav__icon">&#9632;</span> الرئيسية
+        </a>
+
+        <a href="{% url 'dashboard:product_list' %}" class="{% if 'product' in request.resolver_match.url_name %}is-active{% endif %}">
+          <span class="dash-nav__icon">&#128230;</span> المنتجات
+        </a>
+        <a href="{% url 'dashboard:category_list' %}" class="{% if 'category' in request.resolver_match.url_name %}is-active{% endif %}">
+          <span class="dash-nav__icon">&#9776;</span> الأقسام
+        </a>
+
+        <a href="{% url 'dashboard:order_list' %}" class="{% if 'order' in request.resolver_match.url_name %}is-active{% endif %}">
+          <span class="dash-nav__icon">&#8677;</span> الطلبات
+        </a>
+        <a href="{% url 'dashboard:return_list' %}" class="{% if 'return' in request.resolver_match.url_name %}is-active{% endif %}">
+          <span class="dash-nav__icon">&#8630;</span> المرتجعات
+        </a>
+        <a href="{% url 'dashboard:review_list' %}" class="{% if 'review' in request.resolver_match.url_name %}is-active{% endif %}">
+          <span class="dash-nav__icon">&#9733;</span> التقييمات
+        </a>
+
+        {% if user.is_manager %}
+          <a href="{% url 'dashboard:customer_list' %}" class="{% if 'customer' in request.resolver_match.url_name %}is-active{% endif %}">
+            <span class="dash-nav__icon">&#128100;</span> العملاء
+          </a>
+          <a href="{% url 'dashboard:employee_list' %}" class="{% if 'employee' in request.resolver_match.url_name %}is-active{% endif %}">
+            <span class="dash-nav__icon">&#128101;</span> الموظفون
+          </a>
+          <a href="{% url 'dashboard:reports' %}" class="{% if request.resolver_match.url_name == 'reports' %}is-active{% endif %}">
+            <span class="dash-nav__icon">&#128202;</span> التقارير
+          </a>
+          <a href="{% url 'dashboard:visitor_analytics' %}" class="{% if request.resolver_match.url_name == 'visitor_analytics' %}is-active{% endif %}">
+            <span class="dash-nav__icon">&#128200;</span> الزوار
+          </a>
+          <a href="{% url 'dashboard:stock_value_report' %}" class="{% if request.resolver_match.url_name == 'stock_value_report' %}is-active{% endif %}">
+            <span class="dash-nav__icon">&#128176;</span> قيمة المخزون
+          </a>
+          <a href="{% url 'dashboard:banner_list' %}" class="{% if 'banner' in request.resolver_match.url_name %}is-active{% endif %}">
+            <span class="dash-nav__icon">&#128227;</span> البانرات
+          </a>
+          <a href="{% url 'dashboard:coupon_list' %}" class="{% if 'coupon' in request.resolver_match.url_name %}is-active{% endif %}">
+            <span class="dash-nav__icon">&#127991;</span> الكوبونات
+          </a>
+          <a href="{% url 'dashboard:marketing' %}" class="{% if request.resolver_match.url_name == 'marketing' %}is-active{% endif %}">
+            <span class="dash-nav__icon">&#128172;</span> التسويق
+          </a>
+
+          <a href="{% url 'dashboard:settings' %}" class="{% if request.resolver_match.url_name == 'settings' %}is-active{% endif %}">
+            <span class="dash-nav__icon">&#9881;</span> الإعدادات
+          </a>
+        {% endif %}
+      </nav>
+    </aside>
+
+    <div class="dash-main">
+      <header class="dash-topbar">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <button type="button" class="dash-hamburger" id="dash-hamburger" aria-label="فتح القائمة">
+            <span></span><span></span><span></span>
+          </button>
+          <span class="dash-topbar__title">{% block page_title %}لوحة التحكم{% endblock %}</span>
+        </div>
+        <div class="dash-topbar__user">
+          <span class="dash-topbar__user-label">{{ user.get_full_name|default:user.username }} &middot; {{ user.get_role_display }}</span>
+          <span class="dash-topbar__avatar">{{ user.username|first|upper }}</span>
+        </div>
+      </header>
+
+      <main class="dash-content">
+        {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+              <li class="alert alert-{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h3 id="modal-title"></h3>
+        <button type="button" class="modal-close" data-modal-close aria-label="إغلاق">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  {% include 'partials/spinner.html' %}
+  <script src="{% static_versioned 'js/spinner.js' %}"></script>
+  <script src="{% static_versioned 'js/dashboard.js' %}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

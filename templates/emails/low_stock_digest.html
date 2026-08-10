@@ -1,0 +1,35 @@
+{% extends "emails/base_email.html" %}
+
+{% block subject %}تنبيه انخفاض المخزون{% endblock %}
+
+{% block ribbon %}
+<tr>
+  <td style="background-color:#f5a524; padding:12px 40px; text-align:center;">
+    <span style="font-family:'Cairo',Arial,sans-serif; font-weight:700; font-size:13px; letter-spacing:0.06em; text-transform:uppercase; color:#1e1b4b;">تنبيه انخفاض المخزون</span>
+  </td>
+</tr>
+{% endblock %}
+
+{% block content %}
+<p style="margin:0 0 4px; font-family:'Cairo',Arial,sans-serif; font-weight:800; font-size:22px; color:#1e1b4b;">أصناف منخفضة المخزون: {{ variants|length }}</p>
+<p style="margin:0 0 24px; color:#62787a;">الأصناف التالية وصلت إلى حد المخزون المنخفض أو أقل منه.</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e7edec; border-bottom:1px solid #e7edec; margin-bottom:24px;">
+  {% for variant in variants %}
+  <tr>
+    <td style="padding:12px 0; border-bottom:1px solid #e7edec; font-size:14px; color:#15262b;">
+      {{ variant.product.name }}{% if variant.size or variant.color %}<br><span style="font-size:12px; color:#62787a;">{{ variant.size }}{% if variant.size and variant.color %} / {% endif %}{{ variant.color }}</span>{% endif %}
+    </td>
+    <td align="right" style="padding:12px 0; border-bottom:1px solid #e7edec; font-size:14px; font-weight:700; color:{% if variant.stock == 0 %}#e0473a{% else %}#f5a524{% endif %}; white-space:nowrap;">متبقٍ {{ variant.stock }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;">
+  <tr>
+    <td style="border-radius:8px; background-color:#312e81;">
+      <a href="{{ dashboard_url }}" style="display:inline-block; padding:12px 28px; font-family:'Cairo',Arial,sans-serif; font-weight:700; font-size:14px; color:#ffffff; text-decoration:none;">إدارة المنتجات</a>
+    </td>
+  </tr>
+</table>
+{% endblock %}

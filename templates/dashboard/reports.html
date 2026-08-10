@@ -1,0 +1,98 @@
+{% extends "dashboard/base.html" %}
+{% load price_tags %}
+
+{% block page_title %}التقارير{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>التقارير</h1>
+      <p>تفصيل الإيرادات والمبيعات للفترة المحددة.</p>
+    </div>
+    <div class="pill-filters">
+      {% for range in allowed_ranges %}
+        <a href="?days={{ range }}" class="{% if days == range %}is-active{% endif %}">آخر {{ range }} يوم</a>
+      {% endfor %}
+    </div>
+    <a href="{% url 'dashboard:reports_export' %}?days={{ days }}" class="btn btn-outline btn-sm">تصدير CSV</a>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card kpi-card--accent">
+      <div class="kpi-card__label">الإيرادات</div>
+      <div class="kpi-card__value">ج.س {{ revenue|money }}</div>
+      <div class="kpi-card__meta">آخر {{ days }} يوم، باستثناء الملغاة</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card__label">الطلبات</div>
+      <div class="kpi-card__value">{{ orders_count }}</div>
+      <div class="kpi-card__meta">المكتملة وقيد التنفيذ</div>
+    </div>
+  </div>
+
+  <div class="dash-card">
+    <div class="dash-card__title">الإيرادات عبر الزمن</div>
+    <div class="bar-chart">
+      {% for point in chart %}
+        <div class="bar-chart__col" title="{{ point.label }}: ج.س {{ point.value|money }}">
+          <div class="bar-chart__bar" style="height:{{ point.height }}%"></div>
+          <span class="bar-chart__label">{{ point.label }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="dash-grid--reports" style="display:grid;gap:20px;margin-top:20px;">
+    <div class="dash-card">
+      <div class="dash-card__title">الطلبات حسب الحالة</div>
+      <div class="dash-table-wrap" style="border:none;padding:0;">
+        <table class="dash-table">
+          <tbody>
+            {% for row in by_status %}
+              <tr>
+                <td><span class="badge badge-{{ row.status }}">{{ row.status|capfirst }}</span></td>
+                <td>{{ row.count }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-card__title">المنتجات الأكثر مبيعًا</div>
+      <div class="dash-table-wrap" style="border:none;padding:0;">
+        <table class="dash-table">
+          <thead><tr><th>المنتج</th><th>الكمية المباعة</th><th>الإيرادات</th></tr></thead>
+          <tbody>
+            {% for p in top_products %}
+              <tr>
+                <td class="wrap">{{ p.product_name }}</td>
+                <td>{{ p.qty }}</td>
+                <td>ج.س {{ p.revenue|money }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-card__title">الأقسام الأكثر مبيعًا</div>
+      <div class="dash-table-wrap" style="border:none;padding:0;">
+        <table class="dash-table">
+          <thead><tr><th>القسم</th><th>الكمية المباعة</th><th>الإيرادات</th></tr></thead>
+          <tbody>
+            {% for c in top_categories %}
+              <tr>
+                <td class="wrap">{{ c.variant__product__category__name|default:"—" }}</td>
+                <td>{{ c.qty }}</td>
+                <td>ج.س {{ c.revenue|money }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

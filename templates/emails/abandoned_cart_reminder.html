@@ -1,0 +1,28 @@
+{% extends "emails/base_email.html" %}
+
+{% block subject %}نسيت شيئًا في سلتك{% endblock %}
+
+{% block content %}
+<p style="margin:0 0 4px; font-family:'Cairo',Arial,sans-serif; font-weight:800; font-size:22px; color:#1e1b4b;">مرحبًا {{ user.get_full_name|default:user.username }}،</p>
+<p style="margin:0 0 24px; color:#62787a;">تركت بعض المنتجات في سلتك. ما زالت محفوظة وجاهزة متى ما أردت إتمام الطلب.</p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e7edec; border-bottom:1px solid #e7edec; margin-bottom:24px;">
+  {% for item in items %}
+  <tr>
+    <td style="padding:12px 0; border-bottom:1px solid #e7edec; font-size:14px; color:#15262b;">
+      {{ item.variant.product.name }}{% if item.variant.size or item.variant.color %}<br><span style="font-size:12px; color:#62787a;">{{ item.variant.size }}{% if item.variant.size and item.variant.color %} / {% endif %}{{ item.variant.color }}</span>{% endif %}
+    </td>
+    <td align="center" style="padding:12px 0; border-bottom:1px solid #e7edec; font-size:14px; color:#62787a; white-space:nowrap;">&times;{{ item.quantity }}</td>
+    <td align="right" style="padding:12px 0; border-bottom:1px solid #e7edec; font-size:14px; color:#15262b; white-space:nowrap;">{{ item.subtotal|floatformat:2 }} ج.س</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;">
+  <tr>
+    <td style="border-radius:8px; background-color:#4338ca;">
+      <a href="{{ cart_url }}" style="display:inline-block; padding:12px 28px; font-family:'Cairo',Arial,sans-serif; font-weight:700; font-size:14px; color:#ffffff; text-decoration:none;">أكمل طلبك</a>
+    </td>
+  </tr>
+</table>
+{% endblock %}

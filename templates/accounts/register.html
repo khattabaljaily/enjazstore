@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}إنشاء حساب · إنجاز{% endblock %}
+
+{% block content %}
+  <div class="auth-card">
+    <h1 class="section-title" style="font-size:1.4rem">أنشئ حسابك</h1>
+    <p class="text-muted" style="margin-top:-12px;margin-bottom:20px;font-size:0.9rem">
+      كل ما تحتاجه هو بريدك الإلكتروني وكلمة مرور للبدء — يمكنك إضافة اسمك وعنوان التوصيل لاحقًا من صفحة حسابك.
+    </p>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+        {% if field.name == 'privacy_consent' %}
+          <div class="form-group checkbox-field">
+            <label for="{{ field.id_for_label }}">
+              {{ field }}
+              <span>أوافق على <a href="{% url 'pages:privacy' %}" target="_blank" rel="noopener">سياسة الخصوصية</a> وأوافق على تخزين بياناتي واستخدامها على النحو الموضّح فيها.</span>
+            </label>
+            {% for error in field.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+          </div>
+        {% else %}
+          <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<span class="helptext">{{ field.help_text }}</span>{% endif %}
+            {% for error in field.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+          </div>
+        {% endif %}
+      {% endfor %}
+      <button type="submit" class="btn btn-primary btn-block">إنشاء حساب</button>
+    </form>
+    <p class="auth-card__footer">لديك حساب بالفعل؟ <a href="{% url 'accounts:login' %}">تسجيل الدخول</a></p>
+  </div>
+{% endblock %}

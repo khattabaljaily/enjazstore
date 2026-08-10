@@ -1,0 +1,25 @@
+<div class="modal-order-items">
+  <p><strong>المنتج:</strong> {{ review.product.name }}</p>
+  <p><strong>العميل:</strong> {{ review.user.get_full_name|default:review.user.username }} &middot; {{ review.user.email }}</p>
+  <p><strong>التقييم:</strong> {{ review.rating }}/5</p>
+  {% if review.title %}<p><strong>العنوان:</strong> {{ review.title }}</p>{% endif %}
+  <p><strong>التقييم النصي:</strong> {{ review.body }}</p>
+  <p><strong>تاريخ التقديم:</strong> {{ review.created_at|date:"d M Y, H:i" }}</p>
+</div>
+
+<form method="post" action="{{ request.path }}">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="{{ form.status.id_for_label }}">الحالة</label>
+    {{ form.status }}
+    {% for error in form.status.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+  </div>
+  <div class="form-group">
+    <label for="{{ form.staff_notes.id_for_label }}">ملاحظات الموظفين (داخلية)</label>
+    {{ form.staff_notes }}
+    {% for error in form.staff_notes.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+  </div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary btn-sm">حفظ</button>
+  </div>
+</form>

@@ -1,0 +1,28 @@
+{% load price_tags %}
+<div class="modal-order-items">
+  <p><strong>الطلب:</strong> <a href="{% url 'dashboard:order_detail' return_request.order_id %}">#{{ return_request.order_id }}</a> &middot; ج.س {{ return_request.order.total|money }}</p>
+  <p><strong>العميل:</strong> {{ return_request.order.full_name }} &middot; {{ return_request.order.email }} &middot; {{ return_request.order.phone }}</p>
+  <p><strong>السبب:</strong> {{ return_request.get_reason_display }}</p>
+  <p><strong>الحل المطلوب:</strong> {{ return_request.get_resolution_requested_display }}</p>
+  {% if return_request.description %}
+    <p><strong>ملاحظات العميل:</strong> {{ return_request.description }}</p>
+  {% endif %}
+  <p><strong>تاريخ التقديم:</strong> {{ return_request.created_at|date:"d M Y, H:i" }}</p>
+</div>
+
+<form method="post" action="{{ request.path }}">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="{{ form.status.id_for_label }}">الحالة</label>
+    {{ form.status }}
+    {% for error in form.status.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+  </div>
+  <div class="form-group">
+    <label for="{{ form.staff_notes.id_for_label }}">ملاحظات الموظفين</label>
+    {{ form.staff_notes }}
+    {% for error in form.staff_notes.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+  </div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary btn-sm">حفظ</button>
+  </div>
+</form>

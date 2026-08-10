@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}تم تأكيد الطلب · إنجاز{% endblock %}
+
+{% block content %}
+  <div class="page">
+    <div class="confirmation-panel">
+      <div class="confirmation-icon">&#10003;</div>
+      <h1>تم إرسال طلبك بنجاح</h1>
+      <p class="text-muted">شكراً لك! تم استلام طلبك رقم #{{ order.id }} وسيتم تأكيده بعد مراجعة إيصال التحويل البنكي.</p>
+      <a href="{% url 'orders:bill' order.guest_token %}" class="btn btn-primary">عرض / طباعة الفاتورة</a>
+      <a href="{% url 'orders:detail' order.guest_token %}" class="btn btn-outline" style="margin-top:10px">عرض الطلب</a>
+      <a href="{% url 'products:list' %}" class="btn btn-outline" style="margin-top:10px">متابعة التسوق</a>
+    </div>
+  </div>
+{% endblock %}

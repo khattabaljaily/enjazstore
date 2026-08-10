@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}طلب إرجاع · الطلب #{{ order.id }} · إنجاز{% endblock %}
+
+{% block content %}
+  <div class="page">
+    <h1 class="section-title">طلب إرجاع — الطلب #{{ order.id }}</h1>
+
+    <div class="checkout-card" style="max-width:560px">
+      <p class="text-muted" style="margin-bottom:20px">
+        أخبرنا بما حدث والحل الذي ترغب فيه. سنراجع طلبك
+        ونتواصل معك عبر البريد الإلكتروني. راجع
+        <a href="{% url 'pages:terms' %}">شروط الإرجاع والضمان</a> لمعرفة المدد المسموح بها.
+      </p>
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+          <p class="form-errors">{{ form.non_field_errors }}</p>
+        {% endif %}
+
+        <div class="form-group">
+          <label for="{{ form.reason.id_for_label }}">السبب</label>
+          {{ form.reason }}
+          {% for error in form.reason.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.resolution_requested.id_for_label }}">الحل المطلوب</label>
+          {{ form.resolution_requested }}
+          {% for error in form.resolution_requested.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.description.id_for_label }}">التفاصيل</label>
+          {{ form.description }}
+          {% for error in form.description.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">إرسال الطلب</button>
+      </form>
+      <p class="auth-card__footer"><a href="{% url 'orders:detail' order.guest_token %}">&rarr; العودة إلى الطلب</a></p>
+    </div>
+  </div>
+{% endblock %}

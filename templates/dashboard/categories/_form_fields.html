@@ -1,0 +1,30 @@
+<form method="post" action="{{ request.path }}">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="{{ form.name.id_for_label }}">الاسم</label>
+    {{ form.name }}
+    {% for error in form.name.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+  </div>
+  <div class="form-group">
+    <label for="{{ form.description.id_for_label }}">الوصف</label>
+    {{ form.description }}
+  </div>
+  <div class="form-group">
+    <label for="{{ form.icon.id_for_label }}">الأيقونة</label>
+    {% if form.instance.icon %}
+      <span style="display:flex;align-items:center;justify-content:center;height:56px;width:56px;border-radius:16px;background:linear-gradient(135deg,#17153a 0%,#312e81 100%);margin-bottom:8px;">
+        <i class="fa-solid fa-{{ form.instance.icon }}" style="font-size:26px;color:#f5a524;"></i>
+      </span>
+    {% endif %}
+    {{ form.icon }}
+    <span class="helptext">
+      اسم أيقونة Font Awesome، دون بادئة "fa-" — مثل "shopping-bag" أو "laptop" أو "shirt".
+      تصفّح الأسماء عبر <a href="https://fontawesome.com/search?o=r&m=free" target="_blank" rel="noopener">fontawesome.com/search</a>.
+      اتركه فارغًا لعرض الحرف الأول من اسم القسم بدلاً من ذلك.
+    </span>
+  </div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">حفظ القسم</button>
+    <a href="{% url 'dashboard:category_list' %}" class="btn btn-outline">إلغاء</a>
+  </div>
+</form>

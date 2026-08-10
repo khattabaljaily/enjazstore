@@ -1,0 +1,21 @@
+شكرًا لك، {{ order.full_name }}!
+
+تم استلام طلبك #{{ order.id }} وجارٍ تجهيزه.
+
+تاريخ الطلب: {{ order.created_at|date:"M d, Y" }}
+طريقة الدفع: {{ payment_method_label }}
+
+المنتجات:
+{% for item in items %}- {{ item.product_name }}{% if item.variant_label %} ({{ item.variant_label }}){% endif %} x{{ item.quantity }} — {{ item.subtotal|floatformat:2 }} ج.س
+{% endfor %}
+الإجمالي: {{ order.total|floatformat:2 }} ج.س
+
+الشحن إلى:
+{{ order.full_name }}
+{{ order.address }}, {{ order.city }}
+{{ order.phone }}
+
+عرض طلبك: {{ order_url }}
+
+لأي استفسار، راسلنا على support@enjazstore.com
+إنجاز · السودان

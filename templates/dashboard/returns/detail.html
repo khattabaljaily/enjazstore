@@ -1,0 +1,15 @@
+{% extends "dashboard/base.html" %}
+{% load price_tags %}
+
+{% block page_title %}طلب إرجاع #{{ return_request.id }}{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <h1>طلب إرجاع #{{ return_request.id }}</h1>
+    <a href="{% url 'dashboard:return_list' %}" class="btn btn-outline">&rarr; العودة إلى المرتجعات</a>
+  </div>
+
+  <div class="dash-card" style="max-width:640px">
+    {% include 'dashboard/returns/_detail_fields.html' %}
+  </div>
+{% endblock %}

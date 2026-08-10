@@ -1,0 +1,38 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}التسويق{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>البريد التسويقي</h1>
+      <p>اكتب رسالة وأرسلها لجميع العملاء المسجلين، بنفس تصميم رسائل الطلبات.</p>
+    </div>
+  </div>
+
+  <div class="dash-card" style="max-width:640px;">
+    <div class="dash-card__title">إنشاء رسالة جماعية</div>
+    <p class="text-muted" style="font-size:0.85rem;margin-top:-8px;margin-bottom:16px;">
+      تُرسل إلى كل حساب عميل نشط لديه بريد إلكتروني مسجل. افصل بين الفقرات في الرسالة بسطر فارغ.
+    </p>
+    <form method="post" onsubmit="return confirm('إرسال هذا البريد إلى جميع العملاء المسجلين؟ لا يمكن التراجع عن هذا الإجراء.');">
+      {% csrf_token %}
+      <div class="form-group full">
+        <label for="{{ form.subject.id_for_label }}">الموضوع</label>
+        {{ form.subject }}
+        {% if form.subject.errors %}
+          <p class="form-errors">{{ form.subject.errors|join:", " }}</p>
+        {% endif %}
+      </div>
+      <div class="form-group full">
+        <label for="{{ form.message.id_for_label }}">الرسالة</label>
+        {{ form.message }}
+        {% if form.message.errors %}
+          <p class="form-errors">{{ form.message.errors|join:", " }}</p>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="btn btn-primary">إرسال لجميع العملاء</button>
+    </form>
+  </div>
+{% endblock %}

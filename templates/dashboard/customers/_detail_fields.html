@@ -1,0 +1,47 @@
+{% load humanize price_tags %}
+<div class="modal-section">
+  <h4>الملف الشخصي</h4>
+  <p class="text-muted" style="font-size:0.88rem;line-height:1.7">
+    {{ customer.get_full_name|default:customer.username }} &middot; @{{ customer.username }}<br>
+    {{ customer.email }}<br>
+    {{ customer.phone|default:"لا يوجد رقم هاتف مسجل" }}<br>
+    {% if customer.address %}{{ customer.address }}, {% endif %}{{ customer.city|default:"لا يوجد عنوان مسجل" }}
+  </p>
+  <p class="text-muted" style="font-size:0.88rem;line-height:1.7">
+    تاريخ الانضمام {{ customer.date_joined|date:"d M Y" }}<br>
+    آخر نشاط:
+    {% if customer.last_seen_at %}{{ customer.last_seen_at|naturaltime }}{% else %}لم يسجل الدخول بعد{% endif %}<br>
+    الموقع: {{ customer.last_seen_location|default:"—" }}<br>
+    الحالة:
+    {% if customer.is_active %}
+      <span class="badge badge-active">نشط</span>
+    {% else %}
+      <span class="badge badge-inactive">غير نشط</span>
+    {% endif %}
+  </p>
+</div>
+
+<div class="modal-section">
+  <h4>سجل الطلبات</h4>
+  {% if orders %}
+    <div class="dash-table-wrap" style="border:none;padding:0;">
+      <table class="dash-table">
+        <thead><tr><th>الطلب</th><th>التاريخ</th><th>الحالة</th><th>الإجمالي</th></tr></thead>
+        <tbody>
+          {% for order in orders %}
+            <tr>
+              <td data-label="الطلب">
+                <button type="button" class="link-inline" data-modal-url="{% url 'dashboard:order_detail' order.pk %}" data-modal-title="الطلب #{{ order.id }}">#{{ order.id }}</button>
+              </td>
+              <td data-label="التاريخ">{{ order.created_at|date:"d M Y" }}</td>
+              <td data-label="الحالة"><span class="badge badge-{{ order.status }}">{{ order.get_status_display }}</span></td>
+              <td data-label="الإجمالي">ج.س {{ order.total|money }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="text-muted" style="font-size:0.85rem;">لا توجد طلبات بعد.</p>
+  {% endif %}
+</div>

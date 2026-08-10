@@ -1,0 +1,52 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}المرتجعات{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>المرتجعات</h1>
+      <p>{{ return_requests|length }} طلب.</p>
+    </div>
+  </div>
+
+  <form method="get" class="filter-bar">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">جميع الحالات</option>
+      {% for value, label in status_choices %}
+        <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    {% if selected_status %}<button type="submit" class="btn btn-outline btn-sm">تصفية</button>{% endif %}
+  </form>
+
+  {% if return_requests %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead>
+          <tr><th>الطلب</th><th>الطلبية</th><th>السبب</th><th>المطلوب</th><th>الحالة</th><th>التاريخ</th><th class="no-sort"></th></tr>
+        </thead>
+        <tbody>
+          {% for r in return_requests %}
+            <tr>
+              <td data-label="الطلب">#{{ r.id }}</td>
+              <td data-label="الطلبية"><a href="{% url 'dashboard:order_detail' r.order_id %}">#{{ r.order_id }}</a></td>
+              <td data-label="السبب">{{ r.get_reason_display }}</td>
+              <td data-label="المطلوب">{{ r.get_resolution_requested_display }}</td>
+              <td data-label="الحالة"><span class="badge badge-{{ r.status }}">{{ r.get_status_display }}</span></td>
+              <td data-label="التاريخ">{{ r.created_at|date:"d M Y" }}</td>
+              <td class="card-actions">
+                <div class="table-actions">
+                  <button type="button" class="btn btn-outline btn-sm"
+                    data-modal-url="{% url 'dashboard:return_detail' r.pk %}" data-modal-title="طلب إرجاع #{{ r.id }}">مراجعة</button>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="dash-empty"><p>لا توجد طلبات إرجاع.</p></div>
+  {% endif %}
+{% endblock %}

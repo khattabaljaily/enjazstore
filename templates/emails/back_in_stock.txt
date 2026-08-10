@@ -1,0 +1,5 @@
+أخبار سارة!
+
+{{ product.name }}{% if variant.size or variant.color %} ({{ variant.size }}{% if variant.size and variant.color %} / {% endif %}{{ variant.color }}){% endif %} متوفر الآن من جديد. بادر بطلبه قبل نفاد الكمية مجددًا.
+
+تسوّق الآن: {{ product_url }}

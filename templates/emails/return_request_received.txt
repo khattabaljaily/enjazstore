@@ -1,0 +1,11 @@
+مرحبًا {{ order.full_name }}،
+
+تلقينا طلب الإرجاع الخاص بك للطلب #{{ order.id }} وسنقوم بمراجعته قريبًا.
+
+السبب: {{ return_request.get_reason_display }}
+الحل المطلوب: {{ return_request.get_resolution_requested_display }}
+
+عرض طلبك: {{ order_url }}
+
+لأي استفسار، راسلنا على support@enjazstore.com
+إنجاز · السودان

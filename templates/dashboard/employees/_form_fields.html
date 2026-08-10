@@ -1,0 +1,52 @@
+<form method="post" action="{{ request.path }}">
+  {% csrf_token %}
+  <div class="form-grid">
+    <div class="form-group">
+      <label for="{{ form.username.id_for_label }}">اسم المستخدم</label>
+      {{ form.username }}
+      {% for error in form.username.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="form-group">
+      <label for="{{ form.email.id_for_label }}">البريد الإلكتروني</label>
+      {{ form.email }}
+      {% for error in form.email.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="form-group">
+      <label for="{{ form.first_name.id_for_label }}">الاسم الأول</label>
+      {{ form.first_name }}
+    </div>
+    <div class="form-group">
+      <label for="{{ form.last_name.id_for_label }}">اسم العائلة</label>
+      {{ form.last_name }}
+    </div>
+    <div class="form-group">
+      <label for="{{ form.role.id_for_label }}">الدور</label>
+      {{ form.role }}
+      <span class="helptext">يمكن للمدراء إدارة الموظفين وعرض التقارير.</span>
+    </div>
+    {% if form.is_active %}
+      <div class="form-group checkbox-row">
+        {{ form.is_active }}
+        <label for="{{ form.is_active.id_for_label }}" style="margin:0">نشط</label>
+      </div>
+    {% endif %}
+
+    {% if form.password1 %}
+      <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">كلمة المرور</label>
+        {{ form.password1 }}
+        {% for error in form.password1.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.password2.id_for_label }}">تأكيد كلمة المرور</label>
+        {{ form.password2 }}
+        {% for error in form.password2.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">حفظ الموظف</button>
+    <a href="{% url 'dashboard:employee_list' %}" class="btn btn-outline">إلغاء</a>
+  </div>
+</form>

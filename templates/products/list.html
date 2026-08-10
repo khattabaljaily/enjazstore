@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+{% load price_tags %}
+
+{% block title %}{% if category %}{{ category.name }}{% else %}تسوّق{% endif %} · إنجاز{% endblock %}
+
+{% block meta_description %}{% if category %}{% if category.description %}{{ category.description }}{% else %}تسوّق {{ category.name }} من إنجاز، مع الدفع بالتحويل البنكي.{% endif %}{% elif search_query %}نتائج البحث عن "{{ search_query }}" في إنجاز.{% else %}تسوّق كامل كتالوج إنجاز — إلكترونيات، ملابس، منتجات منزلية، وأكثر، مع الدفع بالتحويل البنكي.{% endif %}{% endblock %}
+{% block og_title %}{% if category %}{{ category.name }}{% else %}تسوّق{% endif %} · إنجاز{% endblock %}
+{% block og_description %}{% if category %}{% if category.description %}{{ category.description }}{% else %}تسوّق {{ category.name }} من إنجاز، مع الدفع بالتحويل البنكي.{% endif %}{% elif search_query %}نتائج البحث عن "{{ search_query }}" في إنجاز.{% else %}تسوّق كامل كتالوج إنجاز — إلكترونيات، ملابس، منتجات منزلية، وأكثر، مع الدفع بالتحويل البنكي.{% endif %}{% endblock %}
+
+{% block content %}
+  {% if not category and not search_query %}
+    <section class="hero">
+      <div class="hero__content">
+        <span class="hero__eyebrow">وصل حديثًا كل أسبوع</span>
+        <h1 class="hero__title">كل ما تحتاجه، في متجر واحد.</h1>
+        <p class="hero__subtitle">تصفّح كتالوجنا الكامل وأكمل الشراء بأمان عبر التحويل البنكي.</p>
+        <div class="hero__actions">
+          <a href="#catalog" class="btn btn-accent">ابدأ التسوّق</a>
+        </div>
+        <div class="hero__badges">
+          <span class="hero__badge"><span class="hero__badge-icon">&check;</span> الدفع بتحويل بنكي عبر بنكك</span>
+          <span class="hero__badge"><span class="hero__badge-icon">&check;</span> تسوّق آمن وموثوق</span>
+          <span class="hero__badge"><span class="hero__badge-icon">&check;</span> الشحن من خارج السودان (٢-٤ أسابيع)</span>
+        </div>
+      </div>
+      <div class="hero__art">
+        <img src="{% static 'img/logo/logo.png' %}" alt="">
+      </div>
+    </section>
+
+    {% if ads_enabled %}
+      <div class="ad-banner-row">
+        {% include "ads/_banner.html" with banner=banners.homepage_1 variant="compact" width=600 height=130 %}
+        {% include "ads/_banner.html" with banner=banners.homepage_2 variant="compact" width=600 height=130 %}
+      </div>
+    {% endif %}
+
+    {% if featured_products %}
+      <section class="featured-section">
+        <div class="featured-section__header">
+          <h2 class="featured-section__title"><span class="featured-section__icon">&#9733;</span> الأكثر مبيعًا</h2>
+        </div>
+        <div class="product-grid">
+          {% for product in featured_products %}
+            {% include "products/_product_card.html" %}
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+
+    {% if categories %}
+      <div class="category-slider" data-category-slider>
+        <button type="button" class="category-slider__arrow category-slider__arrow--prev" data-slider-prev aria-label="التمرير إلى الفئات السابقة" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="category-cards" data-slider-track>
+          {% for c in categories %}
+            <a href="{{ c.get_absolute_url }}" class="category-card">
+              <span class="category-card__image">
+                {% if c.icon %}
+                  <i class="fa-solid fa-{{ c.icon }} category-card__icon"></i>
+                {% else %}
+                  <span class="category-card__initial">{{ c.name|slice:":1" }}</span>
+                {% endif %}
+              </span>
+              <span class="category-card__name">{{ c.name }}</span>
+            </a>
+          {% endfor %}
+        </div>
+        <button type="button" class="category-slider__arrow category-slider__arrow--next" data-slider-next aria-label="التمرير إلى الفئات التالية">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  <div class="page" id="catalog">
+    <div class="filters-bar">
+      <h2 class="section-title" style="margin:0">
+        {% if category %}{{ category.name }}{% elif search_query %}نتائج البحث عن "{{ search_query }}"{% else %}{% endif %}
+      </h2>
+      {% if category or search_query %}
+        <nav class="category-chips" aria-label="التصفية حسب الفئة">
+          <a href="{% url 'products:list' %}" class="category-chip{% if not category %} is-active{% endif %}">كل الفئات</a>
+          {% for c in categories %}
+            <a href="{% url 'products:list_by_category' c.slug %}" class="category-chip{% if category.slug == c.slug %} is-active{% endif %}">{{ c.name }}</a>
+          {% endfor %}
+        </nav>
+      {% endif %}
+    </div>
+
+    {% if sections %}
+      {% for section in sections %}
+        <div class="category-section">
+          <div class="category-section__header">
+            <h3 class="category-section__title">
+              {{ section.category.name }}
+              <span class="category-section__count">{{ section.product_count }}</span>
+            </h3>
+            {% if section.has_more %}
+              <a href="{{ section.category.get_absolute_url }}" class="category-section__more">
+                عرض المزيد <span class="category-section__more-arrow">&rarr;</span>
+              </a>
+            {% endif %}
+          </div>
+          <div class="product-grid">
+            {% for product in section.products %}
+              {% include "products/_product_card.html" %}
+            {% endfor %}
+          </div>
+        </div>
+      {% empty %}
+        <div class="empty-state">
+          <p>لم يتم العثور على أي منتجات.</p>
+        </div>
+      {% endfor %}
+    {% elif products %}
+      <div class="product-grid">
+        {% for product in products %}
+          {% include "products/_product_card.html" %}
+        {% endfor %}
+      </div>
+
+      {% if page_obj.paginator.num_pages > 1 %}
+        <nav class="pagination" aria-label="صفحات المنتجات">
+          {% if page_obj.has_previous %}
+            <a class="pagination__link" href="?page={{ page_obj.previous_page_number }}{% if querystring %}&{{ querystring }}{% endif %}">&larr; السابق</a>
+          {% else %}
+            <span class="pagination__link is-disabled">&larr; السابق</span>
+          {% endif %}
+
+          <span class="pagination__status">صفحة {{ page_obj.number }} من {{ page_obj.paginator.num_pages }}</span>
+
+          {% if page_obj.has_next %}
+            <a class="pagination__link" href="?page={{ page_obj.next_page_number }}{% if querystring %}&{{ querystring }}{% endif %}">التالي &rarr;</a>
+          {% else %}
+            <span class="pagination__link is-disabled">التالي &rarr;</span>
+          {% endif %}
+        </nav>
+      {% endif %}
+    {% else %}
+      <div class="empty-state">
+        <p>لم يتم العثور على أي منتجات{% if search_query %} عن "{{ search_query }}"{% endif %}.</p>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

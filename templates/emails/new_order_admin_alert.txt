@@ -1,0 +1,15 @@
+طلب جديد #{{ order.id }}
+
+قام {{ order.full_name }} للتو بطلب بقيمة {{ order.total|floatformat:2 }} ج.س.
+
+المنتجات:
+{% for item in items %}- {{ item.product_name }}{% if item.variant_label %} ({{ item.variant_label }}){% endif %} x{{ item.quantity }} — {{ item.subtotal|floatformat:2 }} ج.س
+{% endfor %}
+الإجمالي: {{ order.total|floatformat:2 }} ج.س
+
+الشحن إلى:
+{{ order.full_name }}
+{{ order.address }}, {{ order.city }}
+{{ order.phone }}
+
+فتح في لوحة التحكم: {{ order_url }}

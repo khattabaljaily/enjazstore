@@ -1,0 +1,14 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}تسجيل إرجاع — الطلب #{{ order.id }}{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <h1>تسجيل إرجاع — الطلب #{{ order.id }}</h1>
+    <a href="{% url 'dashboard:order_detail' order.pk %}" class="btn btn-outline">&rarr; العودة إلى الطلب</a>
+  </div>
+
+  <div class="dash-card" style="max-width:640px">
+    {% include 'dashboard/returns/_form_fields.html' %}
+  </div>
+{% endblock %}

@@ -1,0 +1,7 @@
+مرحبًا {{ user.get_full_name|default:user.username }}،
+
+تركت بعض المنتجات في سلتك. ما زالت محفوظة وجاهزة متى ما أردت إتمام الطلب.
+
+{% for item in items %}- {{ item.variant.product.name }}{% if item.variant.size or item.variant.color %} ({{ item.variant.size }}{% if item.variant.size and item.variant.color %} / {% endif %}{{ item.variant.color }}){% endif %} x{{ item.quantity }} — {{ item.subtotal|floatformat:2 }} ج.س
+{% endfor %}
+أكمل طلبك: {{ cart_url }}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load price_tags %}
+
+{% block title %}طلباتي · إنجاز{% endblock %}
+
+{% block content %}
+  <div class="page">
+    <div class="page-hero">
+      <span class="page-hero__eyebrow">الحساب</span>
+      <h1>طلباتي</h1>
+      <p>تتبّع طلباتك، وألغِ طلبًا أو اطلب إرجاعًا مباشرة من هنا.</p>
+    </div>
+
+    {% if orders %}
+      <div class="order-list-card">
+        {% for order in orders %}
+          <div class="order-row">
+            <div class="order-row__main">
+              <span>
+                <a href="{% url 'orders:detail' order.guest_token %}"><strong>الطلب #{{ order.id }}</strong></a>
+                &middot; {{ order.created_at|date:"M d, Y" }}
+                &middot; <span class="badge badge-{{ order.status }}">{{ order.get_status_display }}</span>
+              </span>
+              <span class="text-muted" style="font-size:0.85rem">
+                {{ order.items.count }} منتج &middot; {{ order.total|money }} ج.س
+              </span>
+            </div>
+
+            <div class="order-row__actions">
+              <a href="{% url 'orders:detail' order.guest_token %}" class="btn btn-outline btn-sm">عرض التفاصيل</a>
+
+              {% if order.is_cancellable %}
+                <form method="post" action="{% url 'orders:cancel' order.id %}"
+                  data-confirm-submit data-confirm-title="إلغاء الطلب؟"
+                  data-confirm-message="هل تريد إلغاء الطلب رقم #{{ order.id }}؟ لا يمكن التراجع عن هذا الإجراء."
+                  data-confirm-label="نعم، ألغِ الطلب">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-outline btn-sm">إلغاء الطلب</button>
+                </form>
+              {% endif %}
+
+              {% if order.open_return %}
+                <span class="badge badge-{{ order.open_return.status }}">الإرجاع: {{ order.open_return.get_status_display }}</span>
+              {% elif order.status == 'delivered' %}
+                <a href="{% url 'orders:request_return' order.id %}" class="btn btn-outline btn-sm">إرجاع / الإبلاغ عن مشكلة</a>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>لم تقم بأي طلبات بعد.</p>
+        <a href="{% url 'products:list' %}" class="btn btn-primary">ابدأ التسوق</a>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

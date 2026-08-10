@@ -1,0 +1,40 @@
+<p class="text-muted" style="margin-bottom:14px;font-size:0.88rem;">
+  جارٍ تسجيل إرجاع للطلب <a href="{% url 'dashboard:order_detail' order.pk %}">#{{ order.id }}</a>
+  &middot; {{ order.full_name }}
+</p>
+
+<form method="post" action="{{ request.path }}">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<p class="form-errors">{{ form.non_field_errors }}</p>{% endif %}
+
+  <div class="form-group">
+    <label for="{{ form.reason.id_for_label }}">السبب</label>
+    {{ form.reason }}
+    {% for error in form.reason.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.resolution_requested.id_for_label }}">الحل المطلوب</label>
+    {{ form.resolution_requested }}
+    {% for error in form.resolution_requested.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.description.id_for_label }}">وصف العميل</label>
+    {{ form.description }}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.status.id_for_label }}">الحالة</label>
+    {{ form.status }}
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.staff_notes.id_for_label }}">ملاحظات الموظفين</label>
+    {{ form.staff_notes }}
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary btn-sm">تسجيل طلب الإرجاع</button>
+  </div>
+</form>

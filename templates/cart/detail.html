@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% load price_tags %}
+
+{% block title %}سلة التسوق · إنجاز{% endblock %}
+
+{% block content %}
+  <div class="page">
+    <h1 class="section-title">سلة التسوق</h1>
+
+    {% include "ads/_banner.html" with banner=banners.cart variant="wide" width=1200 height=140 %}
+
+    {% if cart.items.all %}
+      <div class="cart-layout">
+        <div class="cart-table-wrap">
+          <table class="cart-table" id="cart-table">
+            <thead>
+              <tr>
+                <th>المنتج</th>
+                <th>السعر</th>
+                <th>الكمية</th>
+                <th>المجموع الفرعي</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="cart-items-body">
+              {% for item in cart.items.all %}
+                <tr data-item-id="{{ item.id }}">
+                  <td>
+                    <div class="cart-item__product">
+                      {% with image=item.variant.product.main_image %}
+                        {% if image %}
+                          <img src="{{ image.image.url }}" alt="" class="cart-item__thumb">
+                        {% endif %}
+                      {% endwith %}
+                      <div class="cart-item__info">
+                        <div class="cart-item__name">{{ item.variant.product.name }}</div>
+                        {% if item.variant.size or item.variant.color %}
+                          <div class="cart-item__variant">{{ item.variant.size }} {{ item.variant.color }}</div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </td>
+                  <td data-label="السعر">{{ item.variant.price|money }} ج.س</td>
+                  <td data-label="الكمية">
+                    <div class="qty-stepper">
+                      <button type="button" data-qty-decrease>&minus;</button>
+                      <input type="number" min="1" value="{{ item.quantity }}" data-qty-input>
+                      <button type="button" data-qty-increase>&plus;</button>
+                    </div>
+                  </td>
+                  <td class="cart-item__subtotal" data-label="المجموع الفرعي">{{ item.subtotal|money }} ج.س</td>
+                  <td class="cart-item__actions"><button type="button" class="btn-danger" data-remove-item>إزالة</button></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="summary-card">
+          <h2 class="section-title" style="font-size:1.15rem">ملخص الطلب</h2>
+          <div class="summary-row">
+            <span>المنتجات</span>
+            <span id="summary-items">{{ cart.total_items }}</span>
+          </div>
+          <div class="summary-row">
+            <span>المجموع الفرعي</span>
+            <span id="summary-subtotal">{{ cart.total_price|money }} ج.س</span>
+          </div>
+          <div class="summary-row" id="summary-discount-row" {% if not coupon %}style="display:none"{% endif %}>
+            <span>الخصم <span id="summary-coupon-code">{% if coupon %}({{ coupon.code }}){% endif %}</span></span>
+            <span id="summary-discount">&minus;{{ discount_amount|money }} ج.س</span>
+          </div>
+          <div class="summary-row total">
+            <span>الإجمالي</span>
+            <span id="summary-total">{{ total_after_discount|money }} ج.س</span>
+          </div>
+
+          <div class="coupon-box" style="margin:16px 0">
+            <div id="coupon-applied-state" {% if not coupon %}style="display:none"{% endif %}>
+              <span class="badge badge-processing">تم تفعيل الكود "<span id="coupon-applied-code">{{ coupon.code }}</span>"</span>
+              <button type="button" class="btn-link" id="coupon-remove-btn" style="margin-left:8px">إزالة</button>
+            </div>
+            <form id="coupon-form" data-no-spinner {% if coupon %}style="display:none"{% endif %} style="display:flex; gap:8px;">
+              <input type="text" id="coupon-input" placeholder="كود الخصم" style="flex:1">
+              <button type="submit" class="btn btn-outline">تطبيق</button>
+            </form>
+            <p id="coupon-error" class="form-errors" style="display:none; margin-top:6px"></p>
+          </div>
+
+          <a href="{% url 'orders:checkout' %}" class="btn btn-primary btn-block">إتمام الطلب</a>
+        </div>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>سلتك فارغة.</p>
+        <a href="{% url 'products:list' %}" class="btn btn-primary">متابعة التسوق</a>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const table = document.getElementById('cart-table');
+    if (!table) return;
+
+    function updateSummary(data) {
+      document.getElementById('summary-items').textContent = data.total_items;
+      document.getElementById('summary-subtotal').textContent = `${window.EnjazCart.formatPrice(data.total_price)} ج.س`;
+      document.getElementById('summary-total').textContent = `${window.EnjazCart.formatPrice(data.total_after_discount)} ج.س`;
+      document.getElementById('cart-count').textContent = data.total_items;
+
+      const discountRow = document.getElementById('summary-discount-row');
+      const appliedState = document.getElementById('coupon-applied-state');
+      const form = document.getElementById('coupon-form');
+
+      if (data.coupon_code) {
+        discountRow.style.display = '';
+        document.getElementById('summary-coupon-code').textContent = `(${data.coupon_code})`;
+        document.getElementById('summary-discount').textContent = `−${window.EnjazCart.formatPrice(data.discount_amount)} ج.س`;
+        appliedState.style.display = '';
+        document.getElementById('coupon-applied-code').textContent = data.coupon_code;
+        form.style.display = 'none';
+      } else {
+        discountRow.style.display = 'none';
+        appliedState.style.display = 'none';
+        form.style.display = 'flex';
+      }
+    }
+
+    function updateRow(itemId, data) {
+      const item = data.items.find(i => String(i.id) === itemId);
+      const row = table.querySelector(`tr[data-item-id="${itemId}"]`);
+      if (item && row) {
+        row.querySelector('.cart-item__subtotal').textContent = `${window.EnjazCart.formatPrice(item.subtotal)} ج.س`;
+        row.querySelector('[data-qty-input]').value = item.quantity;
+      } else if (row) {
+        row.remove();
+      }
+      updateSummary(data);
+      if (data.items.length === 0) {
+        window.location.reload();
+      }
+    }
+
+    const couponForm = document.getElementById('coupon-form');
+    const couponError = document.getElementById('coupon-error');
+    const couponRemoveBtn = document.getElementById('coupon-remove-btn');
+
+    if (couponForm) {
+      couponForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const input = document.getElementById('coupon-input');
+        const code = input.value.trim();
+        if (!code) return;
+        couponError.style.display = 'none';
+
+        window.EnjazCart.applyCoupon(code)
+          .then((data) => {
+            input.value = '';
+            updateSummary(data);
+            window.EnjazCart.showToast('تم تطبيق الكوبون.');
+          })
+          .catch((err) => {
+            couponError.textContent = err.message;
+            couponError.style.display = 'block';
+          });
+      });
+    }
+
+    if (couponRemoveBtn) {
+      couponRemoveBtn.addEventListener('click', function () {
+        window.EnjazCart.removeCoupon().then((data) => updateSummary(data));
+      });
+    }
+
+    table.addEventListener('click', function (e) {
+      const row = e.target.closest('tr[data-item-id]');
+      if (!row) return;
+      const itemId = row.dataset.itemId;
+      const qtyInput = row.querySelector('[data-qty-input]');
+
+      if (e.target.matches('[data-qty-increase]')) {
+        window.EnjazCart.updateItem(itemId, parseInt(qtyInput.value, 10) + 1).then(d => updateRow(itemId, d));
+      } else if (e.target.matches('[data-qty-decrease]')) {
+        const next = Math.max(1, parseInt(qtyInput.value, 10) - 1);
+        window.EnjazCart.updateItem(itemId, next).then(d => updateRow(itemId, d));
+      } else if (e.target.matches('[data-remove-item]')) {
+        window.EnjazCart.removeItem(itemId).then(d => updateRow(itemId, d));
+      }
+    });
+
+    table.addEventListener('change', function (e) {
+      if (e.target.matches('[data-qty-input]')) {
+        const row = e.target.closest('tr[data-item-id]');
+        const itemId = row.dataset.itemId;
+        const qty = Math.max(1, parseInt(e.target.value, 10) || 1);
+        window.EnjazCart.updateItem(itemId, qty).then(d => updateRow(itemId, d));
+      }
+    });
+  });
+</script>
+{% endblock %}

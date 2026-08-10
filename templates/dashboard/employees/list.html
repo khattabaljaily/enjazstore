@@ -1,0 +1,78 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}الموظفون{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>الموظفون</h1>
+      <p>{{ employees|length }} حساب موظف.</p>
+    </div>
+    <button type="button" class="btn btn-primary" data-modal-url="{% url 'dashboard:employee_create' %}" data-modal-title="إضافة موظف">+ إضافة موظف</button>
+  </div>
+
+  <div class="dash-table-wrap">
+    <table class="dash-table" id="employees-table">
+      <thead>
+        <tr><th>الاسم</th><th>اسم المستخدم</th><th>البريد الإلكتروني</th><th>الدور</th><th>الحالة</th><th class="no-sort"></th></tr>
+      </thead>
+      <tbody>
+        {% for employee in employees %}
+          <tr>
+            <td data-label="الاسم">{{ employee.get_full_name|default:"—" }}</td>
+            <td data-label="اسم المستخدم">{{ employee.username }}</td>
+            <td data-label="البريد الإلكتروني">{{ employee.email }}</td>
+            <td data-label="الدور"><span class="badge badge-role-{{ employee.role }}">{{ employee.get_role_display }}</span></td>
+            <td data-label="الحالة">
+              {% if employee.is_active %}
+                <span class="badge badge-active">نشط</span>
+              {% else %}
+                <span class="badge badge-inactive">غير نشط</span>
+              {% endif %}
+            </td>
+            <td class="card-actions">
+              <div class="table-actions">
+                <button type="button" class="btn btn-outline btn-sm"
+                  data-modal-url="{% url 'dashboard:employee_edit' employee.pk %}" data-modal-title="تعديل الموظف">تعديل</button>
+                {% if user.is_superuser %}
+                  <button type="button" class="btn btn-outline btn-sm"
+                    data-modal-url="{% url 'dashboard:employee_set_password' employee.pk %}" data-modal-title="تعيين كلمة المرور">تعيين كلمة المرور</button>
+                {% endif %}
+                {% if employee != user %}
+                  <button type="button" class="btn btn-danger btn-sm"
+                    data-modal-confirm
+                    data-modal-url="{% url 'dashboard:employee_toggle_active' employee.pk %}"
+                    data-modal-title="{% if employee.is_active %}إيقاف الموظف؟{% else %}تفعيل الموظف؟{% endif %}"
+                    data-modal-message="{% if employee.is_active %}إيقاف &quot;{{ employee.username }}&quot;؟ لن يتمكن من تسجيل الدخول.{% else %}إعادة تفعيل &quot;{{ employee.username }}&quot;؟{% endif %}"
+                    data-modal-confirm-label="{% if employee.is_active %}نعم، أوقف{% else %}نعم، فعّل{% endif %}">
+                    {% if employee.is_active %}إيقاف{% else %}تفعيل{% endif %}
+                  </button>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
+
+{% block vendor_head %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script>
+  $(function () {
+    $('#employees-table').DataTable({
+      lengthMenu: [20, 50, 100],
+      pageLength: 20,
+      order: [],
+      columnDefs: [{ targets: 'no-sort', orderable: false }],
+      language: { searchPlaceholder: 'ابحث في الموظفين…', search: '' },
+    });
+  });
+</script>
+{% endblock %}

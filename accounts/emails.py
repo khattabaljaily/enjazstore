@@ -1,0 +1,65 @@
+import logging
+import threading
+from email.mime.image import MIMEImage
+
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+
+logger = logging.getLogger(__name__)
+
+LOGO_PATH = settings.BASE_DIR / 'static' / 'img' / 'logo' / 'logo.png'
+LOGO_CID = 'elink-logo'
+
+try:
+    with open(LOGO_PATH, 'rb') as _logo_file:
+        _LOGO_BYTES = _logo_file.read()
+except FileNotFoundError:
+    _LOGO_BYTES = None
+
+
+def _send(template_prefix, subject, to_email, context):
+    if not to_email:
+        return
+
+    context = {**context, 'logo_cid': LOGO_CID}
+    html_body = render_to_string(f'emails/{template_prefix}.html', context)
+    text_body = render_to_string(f'emails/{template_prefix}.txt', context)
+
+    message = EmailMultiAlternatives(subject, text_body, settings.DEFAULT_FROM_EMAIL, [to_email])
+    message.attach_alternative(html_body, 'text/html')
+
+    if _LOGO_BYTES is not None:
+        message.mixed_subtype = 'related'
+        logo = MIMEImage(_LOGO_BYTES)
+        logo.add_header('Content-ID', f'<{LOGO_CID}>')
+        logo.add_header('Content-Disposition', 'inline', filename='logo.png')
+        message.attach(logo)
+
+    def _deliver():
+        try:
+            message.send()
+        except Exception:
+            logger.exception('Failed to send "%s" email to %s', template_prefix, to_email)
+
+    # SMTP delivery can block for seconds (or hang) on a slow/unreachable mail
+    # server; run it off the request thread so it never delays the HTTP response.
+    threading.Thread(target=_deliver, daemon=True).start()
+
+
+def send_password_reset(user, reset_url):
+    _send(
+        'password_reset',
+        subject='إعادة تعيين كلمة المرور — إنجاز',
+        to_email=user.email,
+        context={'user': user, 'reset_url': reset_url},
+    )
+
+
+def send_email_verification(user, verify_url):
+    _send(
+        'verify_email',
+        subject='تأكيد البريد الإلكتروني — إنجاز',
+        to_email=user.email,
+        context={'user': user, 'verify_url': verify_url},
+    )

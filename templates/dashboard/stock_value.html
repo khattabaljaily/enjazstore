@@ -1,0 +1,55 @@
+{% extends "dashboard/base.html" %}
+{% load price_tags %}
+
+{% block page_title %}قيمة المخزون{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>قيمة المخزون</h1>
+      <p>قيمة المخزون الحالي، حسب القسم، بناءً على الكمية المتوفرة.</p>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card kpi-card--accent">
+      <div class="kpi-card__label">إجمالي قيمة المخزون</div>
+      <div class="kpi-card__value">ج.س {{ grand_total|money }}</div>
+      <div class="kpi-card__meta">عبر {{ category_groups|length }} قسم</div>
+    </div>
+  </div>
+
+  {% for group in category_groups %}
+    <div class="dash-card" style="margin-top:20px;">
+      <div class="dash-card__title" style="display:flex;justify-content:space-between;align-items:baseline;">
+        <span>{{ group.category.name }}</span>
+        <span>ج.س {{ group.total|money }}</span>
+      </div>
+      <div class="dash-table-wrap" style="border:none;padding:0;">
+        <table class="dash-table">
+          <thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead>
+          <tbody>
+            {% for item in group.items %}
+              <tr>
+                <td class="wrap">{{ item.label }}</td>
+                <td>{{ item.qty }}</td>
+                <td>ج.س {{ item.price|money }}</td>
+                <td>ج.س {{ item.total|money }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">المجموع الفرعي</td>
+              <td>ج.س {{ group.total|money }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  {% empty %}
+    <div class="dash-card" style="margin-top:20px;">
+      <p class="text-muted">لا يوجد مخزون متوفر.</p>
+    </div>
+  {% endfor %}
+{% endblock %}

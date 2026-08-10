@@ -1,0 +1,52 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}التقييمات{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>التقييمات</h1>
+      <p>{{ reviews|length }} تقييم.</p>
+    </div>
+  </div>
+
+  <form method="get" class="filter-bar">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">جميع الحالات</option>
+      {% for value, label in status_choices %}
+        <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    {% if selected_status %}<button type="submit" class="btn btn-outline btn-sm">تصفية</button>{% endif %}
+  </form>
+
+  {% if reviews %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead>
+          <tr><th>المنتج</th><th>العميل</th><th>التقييم</th><th>العنوان</th><th>الحالة</th><th>التاريخ</th><th class="no-sort"></th></tr>
+        </thead>
+        <tbody>
+          {% for r in reviews %}
+            <tr>
+              <td data-label="المنتج">{{ r.product.name }}</td>
+              <td data-label="العميل">{{ r.user.get_full_name|default:r.user.username }}</td>
+              <td data-label="التقييم">{{ r.rating }}/5</td>
+              <td data-label="العنوان" class="wrap">{{ r.title|default:"—" }}</td>
+              <td data-label="الحالة"><span class="badge badge-{{ r.status }}">{{ r.get_status_display }}</span></td>
+              <td data-label="التاريخ">{{ r.created_at|date:"d M Y" }}</td>
+              <td class="card-actions">
+                <div class="table-actions">
+                  <button type="button" class="btn btn-outline btn-sm"
+                    data-modal-url="{% url 'dashboard:review_detail' r.pk %}" data-modal-title="تقييم #{{ r.id }}">مراجعة</button>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="dash-empty"><p>لا توجد تقييمات.</p></div>
+  {% endif %}
+{% endblock %}

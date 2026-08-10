@@ -1,0 +1,82 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}البانرات{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>البانرات</h1>
+      <p>{{ banners|length }} بانر.</p>
+    </div>
+    <button type="button" class="btn btn-primary" data-modal-url="{% url 'dashboard:banner_create' %}" data-modal-title="إضافة بانر">+ إضافة بانر</button>
+  </div>
+
+  {% if banners %}
+    <div class="dash-table-wrap">
+      <table class="dash-table" id="banners-table">
+        <thead>
+          <tr><th>معاينة</th><th>الاسم</th><th>الموضع</th><th>الترتيب</th><th>مرات الظهور</th><th>النقرات</th><th>معدل النقر</th><th>الحالة</th><th class="no-sort"></th></tr>
+        </thead>
+        <tbody>
+          {% for banner in banners %}
+            <tr>
+              <td data-label="معاينة"><img src="{{ banner.image.url }}" alt="" style="height:40px;border-radius:6px;object-fit:cover;"></td>
+              <td data-label="الاسم" class="wrap">{{ banner.name }}</td>
+              <td data-label="الموضع">{{ banner.get_placement_display }}</td>
+              <td data-label="الترتيب">{{ banner.order }}</td>
+              <td data-label="مرات الظهور">{{ banner.impressions }}</td>
+              <td data-label="النقرات">{{ banner.clicks }}</td>
+              <td data-label="معدل النقر">{{ banner.ctr|floatformat:1 }}%</td>
+              <td data-label="الحالة">
+                {% if banner.is_active %}
+                  <span class="badge badge-active">نشط</span>
+                {% else %}
+                  <span class="badge badge-inactive">غير نشط</span>
+                {% endif %}
+              </td>
+              <td class="card-actions">
+                <div class="table-actions">
+                  <button type="button" class="btn btn-outline btn-sm"
+                    data-modal-url="{% url 'dashboard:banner_edit' banner.pk %}" data-modal-title="تعديل البانر">تعديل</button>
+                  {% if user.is_superuser %}
+                    <button type="button" class="btn btn-danger btn-sm"
+                      data-modal-confirm
+                      data-modal-url="{% url 'dashboard:banner_delete' banner.pk %}"
+                      data-modal-title="حذف البانر؟"
+                      data-modal-message="حذف &quot;{{ banner.name }}&quot;؟ لا يمكن التراجع عن هذا الإجراء."
+                      data-modal-confirm-label="نعم، احذف">حذف</button>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="dash-empty">
+      <p>لا توجد بانرات بعد.</p>
+      <button type="button" class="btn btn-primary" data-modal-url="{% url 'dashboard:banner_create' %}" data-modal-title="إضافة بانر">أضف أول بانر</button>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block vendor_head %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script>
+  $(function () {
+    $('#banners-table').DataTable({
+      lengthMenu: [20, 50, 100],
+      pageLength: 20,
+      order: [],
+      columnDefs: [{ targets: 'no-sort', orderable: false }],
+      language: { searchPlaceholder: 'ابحث في البانرات…', search: '' },
+    });
+  });
+</script>
+{% endblock %}

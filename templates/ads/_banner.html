@@ -1,0 +1,9 @@
+{% if banner %}
+  <a href="{% url 'ads:click' banner.pk %}" class="ad-banner{% if variant %} ad-banner--{{ variant }}{% endif %}" target="_blank" rel="sponsored noopener noreferrer">
+    <img src="{{ banner.image.url }}" alt="{{ banner.alt_text|default:banner.name }}">
+  </a>
+{% elif ads_enabled %}
+  <div class="ad-banner-placeholder{% if variant %} ad-banner-placeholder--{{ variant }}{% endif %}">
+    <span class="ad-banner-placeholder__size">{{ width }} &times; {{ height }}</span>
+  </div>
+{% endif %}

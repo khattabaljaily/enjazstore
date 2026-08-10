@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+{% load price_tags %}
+
+{% block title %}{{ product.name }} · إنجاز{% endblock %}
+{% block meta_description %}{% if product.description %}{{ product.description|truncatechars:155 }}{% else %}{{ product.name }} — متوفر الآن لدى إنجاز، يُشحن من خارج السودان.{% endif %}{% endblock %}
+{% block og_title %}{{ product.name }} · إنجاز{% endblock %}
+{% block og_description %}{% if product.description %}{{ product.description|truncatechars:155 }}{% else %}{{ product.name }} — متوفر الآن لدى إنجاز، يُشحن من خارج السودان.{% endif %}{% endblock %}
+{% block og_type %}product{% endblock %}
+{% block og_image %}{% if product.main_image %}{{ request.scheme }}://{{ request.get_host }}{{ product.main_image.image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+
+{% block extra_head %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "{{ product.name|escapejs }}",
+    "description": "{{ product.description|default:product.name|escapejs }}",
+    "sku": "{{ product.slug|escapejs }}",
+    "category": "{{ product.category.name|escapejs }}",
+    {% if product.main_image %}"image": "{{ request.scheme }}://{{ request.get_host }}{{ product.main_image.image.url }}",{% endif %}
+    "offers": {
+      "@type": "Offer",
+      "url": "{{ request.build_absolute_uri }}",
+      "priceCurrency": "SDG",
+      "price": "{{ product.price }}",
+      "availability": "{% if product.total_stock > 0 %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}"
+    }
+  }
+  </script>
+{% endblock %}
+
+{% block content %}
+  <div class="page">
+    <div class="product-detail">
+      <div class="product-detail__gallery">
+        {% with images=product.images.all %}
+          {% if images %}
+            <div class="product-gallery" id="product-gallery">
+              <div class="product-gallery__main" id="gallery-main" data-lightbox-open>
+                <img src="{{ images.0.image.url }}" alt="{{ images.0.alt_text|default:product.name }}" id="gallery-main-image" fetchpriority="high">
+                <span class="product-gallery__main-zoom">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path><path d="M11 8v6M8 11h6"></path></svg>
+                </span>
+              </div>
+              {% if images|length > 1 %}
+                <div class="product-gallery__thumbs">
+                  {% for image in images %}
+                    <button type="button" class="product-gallery__thumb{% if forloop.first %} is-active{% endif %}"
+                      data-full="{{ image.image.url }}" data-alt="{{ image.alt_text|default:product.name }}">
+                      <img src="{{ image.image.url }}" alt="" loading="lazy" decoding="async">
+                    </button>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="product-detail__gallery-placeholder">إنجاز</div>
+          {% endif %}
+        {% endwith %}
+      </div>
+
+      <div class="product-detail__info">
+        <div class="product-detail__meta">
+          <span class="product-detail__category">{{ product.category.name }}</span>
+          <span class="condition-badge condition-badge--{{ product.condition }}">{{ product.get_condition_display }}</span>
+        </div>
+        <h1>{{ product.name }}</h1>
+        {% if rating_summary.count %}
+          <a href="#reviews" class="product-detail__rating" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:inherit;margin-bottom:8px;">
+            <span style="color:#f5a524;">
+              {% for i in "12345" %}{% if forloop.counter <= rating_summary.stars_full %}★{% else %}☆{% endif %}{% endfor %}
+            </span>
+            <span class="text-muted" style="font-size:0.88rem;">{{ rating_summary.average|floatformat:1 }} ({{ rating_summary.count }} تقييم)</span>
+          </a>
+        {% endif %}
+        <div class="product-detail__price" id="detail-price">{{ product.price|money }} ج.س</div>
+        <p>{{ product.description }}</p>
+
+        {% if product.variants.all %}
+          <div class="variant-select">
+            <label for="variant-select">اختر خيارًا</label>
+            <select id="variant-select">
+              {% for variant in product.variants.all %}
+                <option value="{{ variant.id }}" data-price="{{ variant.price }}" data-stock="{{ variant.stock }}"
+                  {% if not variant.in_stock %}disabled{% endif %}>
+                  {% if variant.size or variant.color %}{{ variant.size }} {{ variant.color }}{% else %}{{ variant.sku }}{% endif %}
+                  {% if not variant.in_stock %} — غير متوفر{% endif %}
+                </option>
+              {% endfor %}
+            </select>
+            <p class="stock-note" id="stock-note"></p>
+          </div>
+
+          <div class="detail-actions">
+            <input type="number" class="qty-input" id="qty-input" value="1" min="1">
+            <button type="button" class="btn btn-primary" id="add-to-cart-btn" data-add-to-cart>إضافة إلى السلة</button>
+            {% if user.is_authenticated %}
+              <button type="button" class="btn btn-outline{% if in_wishlist %} is-active{% endif %}"
+                data-wishlist-toggle data-url="{% url 'products:toggle_wishlist' product.slug %}"
+                data-active-label="&#9829; محفوظ" data-inactive-label="&#9825; حفظ">
+                {% if in_wishlist %}&#9829; محفوظ{% else %}&#9825; حفظ{% endif %}
+              </button>
+            {% else %}
+              <a href="{% url 'accounts:login' %}?next={{ request.path|urlencode }}" class="btn btn-outline">&#9825; حفظ</a>
+            {% endif %}
+          </div>
+
+          <div class="detail-actions" id="notify-stock-block" style="display:none; margin-top:12px;">
+            <button type="button" class="btn btn-outline" id="notify-stock-btn" data-notify-trigger
+              data-url="{% url 'products:notify_stock' product.slug %}" data-variant=""
+              data-label="نبّهني عند التوفر">
+              نبّهني عند التوفر
+            </button>
+          </div>
+        {% else %}
+          <p class="text-muted">هذا المنتج غير متوفر حاليًا.</p>
+        {% endif %}
+
+        {% if product.warranty_days %}
+          <p class="warranty-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+            يشمل ضمانًا لمدة {{ product.warranty_days }} يومًا{% if product.is_used %} (منتج مستعمل){% endif %}
+          </p>
+        {% elif product.is_used %}
+          <p class="warranty-note warranty-note--none">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+            يُباع كمنتج مستعمل — بدون ضمان من الشركة المصنّعة
+          </p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="product-reviews" id="reviews" style="margin-top:40px;max-width:720px;">
+      <h2 class="section-title" style="font-size:1.15rem">
+        التقييمات {% if rating_summary.count %}({{ rating_summary.count }}){% endif %}
+      </h2>
+
+      {% if can_review %}
+        <a href="{% url 'products:submit_review' product.slug %}" class="btn btn-outline" style="margin-bottom:20px;">اكتب تقييمًا</a>
+      {% elif has_reviewed %}
+        <p class="text-muted" style="margin-bottom:20px;">لقد قمت بتقييم هذا المنتج مسبقًا.</p>
+      {% endif %}
+
+      {% if reviews %}
+        {% for review in reviews %}
+          <div class="review-card" style="border-bottom:1px solid var(--color-border,#e7edec);padding:14px 0;">
+            <div style="color:#f5a524;">
+              {% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}
+            </div>
+            {% if review.title %}<p style="font-weight:700;margin:6px 0 2px;">{{ review.title }}</p>{% endif %}
+            <p style="margin:4px 0;">{{ review.body }}</p>
+            <p class="text-muted" style="font-size:0.8rem;">{{ review.user.get_full_name|default:review.user.username }} &middot; {{ review.created_at|date:"M d, Y" }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-muted">لا توجد تقييمات حتى الآن.</p>
+      {% endif %}
+    </div>
+
+    {% if related_products %}
+      <div class="related-products" style="margin-top:40px;">
+        <h2 class="section-title" style="font-size:1.15rem">قد يعجبك أيضًا</h2>
+        <div class="product-grid">
+          {% for product in related_products %}
+            {% include "products/_product_card.html" %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="gallery-lightbox" id="gallery-lightbox">
+    <button type="button" class="gallery-lightbox__close" data-lightbox-close aria-label="إغلاق">&times;</button>
+    <button type="button" class="gallery-lightbox__nav prev" data-lightbox-prev aria-label="الصورة السابقة">&larr;</button>
+    <img src="" alt="" id="lightbox-image">
+    <button type="button" class="gallery-lightbox__nav next" data-lightbox-next aria-label="الصورة التالية">&rarr;</button>
+  </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const select = document.getElementById('variant-select');
+    const stockNote = document.getElementById('stock-note');
+    const btn = document.getElementById('add-to-cart-btn');
+    const notifyBlock = document.getElementById('notify-stock-block');
+    const notifyBtn = document.getElementById('notify-stock-btn');
+
+    function updateStockNote() {
+      if (!select) return;
+      const opt = select.options[select.selectedIndex] || select.options[0];
+      if (!opt) return;
+      const stock = parseInt(opt.dataset.stock, 10);
+      if (stock > 0) {
+        stockNote.textContent = stock <= 5 ? `متبقٍ ${stock} فقط في المخزون` : 'متوفر';
+        stockNote.className = 'stock-note in-stock';
+        btn.disabled = false;
+        if (notifyBlock) notifyBlock.style.display = 'none';
+      } else {
+        stockNote.textContent = 'غير متوفر';
+        stockNote.className = 'stock-note out-of-stock';
+        btn.disabled = true;
+        if (notifyBlock) notifyBlock.style.display = 'flex';
+        if (notifyBtn) {
+          notifyBtn.dataset.variant = opt.value;
+          notifyBtn.disabled = false;
+          notifyBtn.textContent = notifyBtn.dataset.label;
+        }
+      }
+    }
+
+    if (select) {
+      select.addEventListener('change', updateStockNote);
+      updateStockNote();
+    }
+
+    if (btn) {
+      btn.addEventListener('click', function () {
+        const variantId = select ? select.value : null;
+        const qty = parseInt(document.getElementById('qty-input').value, 10) || 1;
+        window.EnjazCart.addItem(variantId, qty);
+      });
+    }
+
+    // Gallery: thumbnail switching + lightbox
+    const gallery = document.getElementById('product-gallery');
+    if (!gallery) return;
+
+    const mainImage = document.getElementById('gallery-main-image');
+    const thumbs = Array.from(gallery.querySelectorAll('.product-gallery__thumb'));
+    const lightbox = document.getElementById('gallery-lightbox');
+    const lightboxImage = document.getElementById('lightbox-image');
+    let currentIndex = 0;
+
+    function setActive(index) {
+      currentIndex = (index + thumbs.length) % (thumbs.length || 1);
+      const thumb = thumbs[currentIndex];
+      const full = thumb ? thumb.dataset.full : mainImage.src;
+      const alt = thumb ? thumb.dataset.alt : mainImage.alt;
+      mainImage.src = full;
+      mainImage.alt = alt;
+      thumbs.forEach((t, i) => t.classList.toggle('is-active', i === currentIndex));
+    }
+
+    thumbs.forEach((thumb, i) => thumb.addEventListener('click', () => setActive(i)));
+
+    function openLightbox() {
+      lightboxImage.src = mainImage.src;
+      lightboxImage.alt = mainImage.alt;
+      lightbox.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('gallery-main').addEventListener('click', openLightbox);
+    lightbox.querySelector('[data-lightbox-close]').addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+
+    if (thumbs.length > 1) {
+      lightbox.querySelector('[data-lightbox-prev]').addEventListener('click', () => { setActive(currentIndex - 1); lightboxImage.src = mainImage.src; lightboxImage.alt = mainImage.alt; });
+      lightbox.querySelector('[data-lightbox-next]').addEventListener('click', () => { setActive(currentIndex + 1); lightboxImage.src = mainImage.src; lightboxImage.alt = mainImage.alt; });
+    } else {
+      lightbox.querySelectorAll('.gallery-lightbox__nav').forEach((nav) => nav.style.display = 'none');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('is-open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft' && thumbs.length > 1) { setActive(currentIndex - 1); lightboxImage.src = mainImage.src; lightboxImage.alt = mainImage.alt; }
+      if (e.key === 'ArrowRight' && thumbs.length > 1) { setActive(currentIndex + 1); lightboxImage.src = mainImage.src; lightboxImage.alt = mainImage.alt; }
+    });
+  });
+</script>
+{% endblock %}

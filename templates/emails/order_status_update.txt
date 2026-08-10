@@ -1,0 +1,12 @@
+مرحبًا {{ order.full_name }}،
+
+{{ status_message }}
+
+حالة الطلب #{{ order.id }} الآن: {{ order.get_status_display }}
+{% if order.tracking_number %}رقم التتبع: {{ order.tracking_number }}{% if order.tracking_carrier %} عبر {{ order.tracking_carrier }}{% endif %}
+{% endif %}
+
+عرض طلبك: {{ order_url }}
+
+لأي استفسار، راسلنا على support@enjazstore.com
+إنجاز · السودان

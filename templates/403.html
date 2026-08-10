@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}تم رفض الوصول · إنجاز{% endblock %}
+
+{% block content %}
+  <div class="confirmation-panel">
+    <div class="confirmation-icon" style="background:var(--color-danger);box-shadow:none;">&times;</div>
+    <h1>تم رفض الوصول</h1>
+    <p class="text-muted">ليس لديك صلاحية للوصول إلى هذه الصفحة.</p>
+    <a href="{% url 'products:list' %}" class="btn btn-primary">العودة إلى المتجر</a>
+  </div>
+{% endblock %}

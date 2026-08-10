@@ -1,0 +1,329 @@
+{% load static %}
+{% load asset_tags %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>قريبًا · إنجاز</title>
+  <meta name="description" content="إنجاز قادم قريبًا. تابعونا.">
+  <link rel="icon" href="{% static 'img/logo/favicon.png' %}">
+  <link rel="apple-touch-icon" sizes="152x152" href="{% static 'img/icons/icon-152x152.png' %}">
+  <link rel="apple-touch-icon" sizes="192x192" href="{% static 'img/icons/icon-192x192.png' %}">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="إنجاز">
+  <meta name="theme-color" content="#4338ca">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static_versioned 'css/style.css' %}">
+  <style>
+    .coming-soon {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      overflow: hidden;
+      background: var(--gradient-navy);
+      isolation: isolate;
+    }
+
+    /* ---- ambient background blobs ---- */
+    .coming-soon__blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+      opacity: 0.55;
+      z-index: 0;
+      will-change: transform;
+    }
+    .coming-soon__blob--a {
+      width: 480px; height: 480px;
+      top: -160px; left: -120px;
+      background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
+    }
+    .coming-soon__blob--b {
+      width: 420px; height: 420px;
+      bottom: -140px; right: -100px;
+      background: radial-gradient(circle, var(--color-secondary) 0%, transparent 70%);
+    }
+    .coming-soon__blob--c {
+      width: 360px; height: 360px;
+      top: 40%; right: 12%;
+      background: radial-gradient(circle, var(--color-accent) 0%, transparent 72%);
+      opacity: 0.28;
+    }
+
+    .coming-soon__grid {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+    }
+
+    /* ---- floating particles ---- */
+    .coming-soon__particle {
+      position: absolute;
+      z-index: 0;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      bottom: -20px;
+    }
+    .coming-soon__particle:nth-child(1) { left: 12%; animation-duration: 14s; }
+    .coming-soon__particle:nth-child(2) { left: 26%; width: 4px; height: 4px; animation-duration: 11s; }
+    .coming-soon__particle:nth-child(3) { left: 45%; animation-duration: 17s; }
+    .coming-soon__particle:nth-child(4) { left: 63%; width: 5px; height: 5px; animation-duration: 13s; }
+    .coming-soon__particle:nth-child(5) { left: 78%; animation-duration: 16s; }
+    .coming-soon__particle:nth-child(6) { left: 91%; width: 4px; height: 4px; animation-duration: 12s; }
+    .coming-soon__particle:nth-child(2), .coming-soon__particle:nth-child(5) { animation-delay: -4s; }
+    .coming-soon__particle:nth-child(3), .coming-soon__particle:nth-child(6) { animation-delay: -8s; }
+
+    /* ---- card ---- */
+    .coming-soon__card {
+      position: relative;
+      z-index: 1;
+      max-width: 520px;
+      width: 100%;
+      padding: 56px 44px;
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .coming-soon__logo-ring {
+      position: relative;
+      width: 92px;
+      height: 92px;
+      margin: 0 auto 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(from 0deg, var(--color-primary), var(--color-accent), var(--color-secondary), var(--color-primary));
+      padding: 3px;
+    }
+    .coming-soon__logo-ring::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(67, 56, 202, 0.45);
+      z-index: -1;
+    }
+    .coming-soon__logo-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--color-navy);
+      display: grid;
+      place-items: center;
+    }
+    .coming-soon__logo {
+      width: 46px; height: 46px;
+      object-fit: contain;
+    }
+
+    .coming-soon__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      color: var(--color-primary-light);
+      background: rgba(67, 56, 202, 0.16);
+      border: 1px solid rgba(67, 56, 202, 0.35);
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+    }
+    .coming-soon__dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--color-secondary);
+      box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6);
+      flex-shrink: 0;
+    }
+
+    .coming-soon__title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(1.9rem, 4vw, 2.5rem);
+      line-height: 1.15;
+      margin: 0 0 16px;
+      background: linear-gradient(135deg, #ffffff 0%, #dcdafc 55%, var(--color-primary-light) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .coming-soon__message {
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 1rem;
+      line-height: 1.65;
+      margin: 0 0 15px;
+    }
+
+    /* ---- link motif: two nodes, a pulsing connection ---- */
+    .coming-soon__link {
+      display: block;
+      width: 132px;
+      margin: 0 auto 30px;
+      overflow: visible;
+    }
+    .coming-soon__link-line {
+      fill: none;
+      stroke: var(--color-secondary);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-dasharray: 6 10;
+    }
+    .coming-soon__link-dot { fill: var(--color-primary-light); }
+
+    .coming-soon__loader {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .coming-soon__loader-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--color-primary-light);
+      opacity: 0.5;
+    }
+    .coming-soon__loader-dot:nth-child(2) { background: var(--color-accent); }
+    .coming-soon__loader-dot:nth-child(3) { background: var(--color-secondary); }
+
+    /* ---- entrance choreography ---- */
+    .coming-soon__logo-ring,
+    .coming-soon__eyebrow,
+    .coming-soon__title,
+    .coming-soon__message,
+    .coming-soon__link,
+    .coming-soon__loader {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .coming-soon__blob--a { animation: drift-a 22s ease-in-out infinite alternate; }
+      .coming-soon__blob--b { animation: drift-b 26s ease-in-out infinite alternate; }
+      .coming-soon__blob--c { animation: drift-c 19s ease-in-out infinite alternate; }
+
+      .coming-soon__particle { animation-name: rise; animation-timing-function: linear; animation-iteration-count: infinite; }
+
+      .coming-soon__card { animation: card-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+      .coming-soon__logo-ring { opacity: 0; transform: scale(0.6); animation: pop-in 0.6s 0.05s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+      .coming-soon__logo-ring::after { animation: ring-pulse 2.6s ease-out 0.7s infinite; }
+      .coming-soon__logo-ring { animation: pop-in 0.6s 0.05s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, spin-ring 10s linear 0.7s infinite; }
+
+      .coming-soon__eyebrow { opacity: 0; transform: translateY(10px); animation: fade-up 0.6s 0.2s ease forwards; }
+      .coming-soon__dot { animation: dot-pulse 1.8s ease-in-out infinite; }
+
+      .coming-soon__title { opacity: 0; transform: translateY(14px); animation: fade-up 0.6s 0.32s ease forwards; }
+      .coming-soon__message { opacity: 0; transform: translateY(14px); animation: fade-up 0.6s 0.44s ease forwards; }
+      .coming-soon__link { opacity: 0; transform: translateY(10px); animation: fade-up 0.6s 0.56s ease forwards; }
+      .coming-soon__link-line { animation: line-travel 3.4s linear infinite; }
+      .coming-soon__link-dot--a { animation: node-pulse 3.4s ease-in-out infinite; }
+      .coming-soon__link-dot--b { animation: node-pulse 3.4s ease-in-out infinite 1.7s; }
+
+      .coming-soon__loader { opacity: 0; animation: fade-up 0.6s 0.68s ease forwards; }
+      .coming-soon__loader-dot { animation: loader-bounce 1.2s ease-in-out infinite; }
+      .coming-soon__loader-dot:nth-child(2) { animation-delay: 0.15s; }
+      .coming-soon__loader-dot:nth-child(3) { animation-delay: 0.3s; }
+    }
+
+    @keyframes drift-a { from { transform: translate(0, 0) scale(1); } to { transform: translate(60px, 50px) scale(1.15); } }
+    @keyframes drift-b { from { transform: translate(0, 0) scale(1); } to { transform: translate(-50px, -40px) scale(1.1); } }
+    @keyframes drift-c { from { transform: translate(0, 0) scale(1); } to { transform: translate(-30px, 40px) scale(0.9); } }
+
+    @keyframes rise {
+      from { transform: translateY(0) translateX(0); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.4; }
+      to { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+    }
+
+    @keyframes card-in { from { opacity: 0; transform: translateY(24px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes pop-in { to { opacity: 1; transform: scale(1); } }
+    @keyframes spin-ring { to { transform: rotate(360deg); } }
+    @keyframes ring-pulse {
+      0% { box-shadow: 0 0 0 0 rgba(67, 56, 202, 0.45); }
+      100% { box-shadow: 0 0 0 18px rgba(67, 56, 202, 0); }
+    }
+    @keyframes fade-up { to { opacity: 1; transform: translateY(0); } }
+    @keyframes dot-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.55); }
+      50% { box-shadow: 0 0 0 5px rgba(22, 163, 74, 0); }
+    }
+    @keyframes line-travel { to { stroke-dashoffset: -32; } }
+    @keyframes node-pulse {
+      0%, 100% { opacity: 0.7; r: 5; }
+      50% { opacity: 1; r: 6.5; }
+    }
+    @keyframes loader-bounce {
+      0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <main class="coming-soon">
+    <div class="coming-soon__blob coming-soon__blob--a"></div>
+    <div class="coming-soon__blob coming-soon__blob--b"></div>
+    <div class="coming-soon__blob coming-soon__blob--c"></div>
+    <div class="coming-soon__grid"></div>
+    <span class="coming-soon__particle"></span>
+    <span class="coming-soon__particle"></span>
+    <span class="coming-soon__particle"></span>
+    <span class="coming-soon__particle"></span>
+    <span class="coming-soon__particle"></span>
+    <span class="coming-soon__particle"></span>
+
+    <div class="coming-soon__card">
+      <div class="coming-soon__logo-ring">
+        <div class="coming-soon__logo-inner">
+          <img src="{% static 'img/logo/logo.png' %}" alt="إنجاز" class="coming-soon__logo">
+        </div>
+      </div>
+
+      <div class="coming-soon__eyebrow">
+        <span class="coming-soon__dot"></span> قريبًا
+      </div>
+
+      <h1 class="coming-soon__title">سنكون هنا قريبًا</h1>
+      <p class="coming-soon__message">{{ message }}</p>
+
+      <svg class="coming-soon__link" viewBox="0 0 132 20" aria-hidden="true">
+        <circle class="coming-soon__link-dot coming-soon__link-dot--a" cx="10" cy="10" r="5"/>
+        <path class="coming-soon__link-line" d="M18 10 H114"/>
+        <circle class="coming-soon__link-dot coming-soon__link-dot--b" cx="122" cy="10" r="5"/>
+      </svg>
+
+      <div class="coming-soon__loader" role="status" aria-label="جاري التجهيز">
+        <span class="coming-soon__loader-dot"></span>
+        <span class="coming-soon__loader-dot"></span>
+        <span class="coming-soon__loader-dot"></span>
+      </div>
+    </div>
+  </main>
+
+  <script src="{% static_versioned 'js/pwa-install.js' %}"></script>
+</body>
+</html>

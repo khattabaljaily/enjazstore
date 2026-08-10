@@ -1,0 +1,14 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}تقييم #{{ review.id }}{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <h1>تقييم #{{ review.id }}</h1>
+    <a href="{% url 'dashboard:review_list' %}" class="btn btn-outline">&rarr; العودة إلى التقييمات</a>
+  </div>
+
+  <div class="dash-card" style="max-width:640px">
+    {% include 'dashboard/reviews/_detail_fields.html' %}
+  </div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}حسابي · إنجاز{% endblock %}
+
+{% block content %}
+  <div class="page">
+    <div class="page-hero">
+      <span class="page-hero__eyebrow">الحساب</span>
+      <h1>حسابي</h1>
+      <p>أدر ملفك الشخصي وكلمة المرور، واحفظ عنوانك لتسريع إتمام الطلب.</p>
+    </div>
+
+    <div class="checkout-layout">
+      <div class="checkout-card">
+        <h2 style="font-size:1.05rem">بيانات الحساب</h2>
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group">
+              <label for="{{ form.first_name.id_for_label }}">الاسم الأول</label>
+              {{ form.first_name }}
+              {% for error in form.first_name.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="form-group">
+              <label for="{{ form.last_name.id_for_label }}">اسم العائلة</label>
+              {{ form.last_name }}
+              {% for error in form.last_name.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="{{ form.username.id_for_label }}">اسم المستخدم</label>
+              {{ form.username }}
+              {% for error in form.username.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="form-group">
+              <label for="{{ form.phone.id_for_label }}">رقم الهاتف</label>
+              {{ form.phone }}
+              {% for error in form.phone.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="{{ form.address.id_for_label }}">عنوان التوصيل</label>
+            {{ form.address }}
+            {% for error in form.address.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.city.id_for_label }}">المدينة</label>
+            {{ form.city }}
+            {% for error in form.city.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+          </div>
+          <p class="text-muted" style="font-size:0.85rem;margin-bottom:16px">
+            يُستخدم عنوانك ورقم هاتفك المحفوظان لتعبئة صفحة إتمام الطلب تلقائيًا.
+          </p>
+          <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+        </form>
+      </div>
+
+      <div class="order-list-card">
+        <h2 style="font-size:1.05rem">مسجّل الدخول بـ</h2>
+        <p class="text-muted" style="font-size:0.9rem">{{ user.email }}</p>
+        {% if user.is_email_verified %}
+          <p style="font-size:0.85rem;color:#4338ca;font-weight:600;margin-top:4px;">&#10003; تم التحقق من البريد الإلكتروني</p>
+        {% else %}
+          <p style="font-size:0.85rem;color:#e0473a;font-weight:600;margin-top:4px;">لم يتم التحقق من البريد الإلكتروني</p>
+          <form method="post" action="{% url 'accounts:resend_verification' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline btn-sm">إعادة إرسال رابط التحقق</button>
+          </form>
+        {% endif %}
+
+        {% if user.is_staff %}
+          <h2 style="font-size:1.05rem;margin-top:24px">المصادقة الثنائية</h2>
+          {% if user.totp_enabled %}
+            <p style="font-size:0.85rem;color:#4338ca;font-weight:600;margin-bottom:8px;">&#10003; مُفعّلة</p>
+            <form method="post" action="{% url 'accounts:two_factor_disable' %}">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="disable-2fa-code">أدخل رمزًا للتعطيل</label>
+                <input type="text" id="disable-2fa-code" name="code" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code">
+              </div>
+              <button type="submit" class="btn btn-outline btn-block">تعطيل المصادقة الثنائية</button>
+            </form>
+          {% else %}
+            <p class="text-muted" style="font-size:0.9rem">أضف طبقة حماية إضافية لتسجيل الدخول إلى لوحة التحكم.</p>
+            <a href="{% url 'accounts:two_factor_setup' %}" class="btn btn-outline btn-block">تفعيل المصادقة الثنائية</a>
+          {% endif %}
+        {% endif %}
+
+        <h2 style="font-size:1.05rem;margin-top:24px">كلمة المرور</h2>
+        <p class="text-muted" style="font-size:0.9rem">غيّر كلمة مرور حسابك.</p>
+        <a href="{% url 'accounts:password_change' %}" class="btn btn-outline btn-block">تغيير كلمة المرور</a>
+
+        <h2 style="font-size:1.05rem;margin-top:24px">طلباتي</h2>
+        <p class="text-muted" style="font-size:0.9rem">اطّلع على سجل طلباتك، أو ألغِ طلبًا أو أرجعه.</p>
+        <a href="{% url 'accounts:orders' %}" class="btn btn-outline btn-block">عرض طلباتي</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

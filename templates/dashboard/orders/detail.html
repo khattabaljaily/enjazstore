@@ -1,0 +1,94 @@
+{% extends "dashboard/base.html" %}
+{% load price_tags %}
+
+{% block page_title %}الطلب #{{ order.id }}{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <h1>الطلب #{{ order.id }}</h1>
+    <div style="display:flex;gap:10px;">
+      <a href="{% url 'dashboard:order_bill' order.pk %}" class="btn btn-primary">عرض / طباعة الفاتورة</a>
+      <a href="{% url 'dashboard:order_list' %}" class="btn btn-outline">&rarr; العودة إلى الطلبات</a>
+    </div>
+  </div>
+
+  <div class="dash-grid">
+    <div class="dash-card">
+      <div class="dash-card__title">المنتجات</div>
+      <div class="dash-table-wrap" style="border:none;padding:0;">
+        <table class="dash-table">
+          <thead><tr><th>المنتج</th><th>الكمية</th><th>سعر الوحدة</th><th>الإجمالي</th></tr></thead>
+          <tbody>
+            {% for item in order.items.all %}
+              <tr>
+                <td class="wrap">{{ item.product_name }}{% if item.variant_label %} <span class="text-muted">({{ item.variant_label }})</span>{% endif %}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.unit_price|money }} ج.س</td>
+                <td>{{ item.subtotal|money }} ج.س</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div style="text-align:right;margin-top:16px;font-family:var(--font-display);font-weight:800;font-size:1.15rem;color:var(--color-navy)">
+        الإجمالي: {{ order.total|money }} ج.س
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:20px;">
+      <div class="dash-card">
+        <div class="dash-card__title">الحالة</div>
+        <form method="post" id="order-status-form">
+          {% csrf_token %}
+          <div class="form-group">
+            {{ form.status }}
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">تحديث الحالة</button>
+        </form>
+
+        {% if order.payment %}
+          <p class="text-muted" style="margin-top:16px;font-size:0.85rem;">
+            الدفع: <strong>تحويل بنكي</strong> &middot; <span class="badge badge-{{ order.payment.status }}">{{ order.payment.get_status_display }}</span>
+          </p>
+          {% if order.payment.receipt_image %}
+            <a href="{{ order.payment.receipt_image.url }}" target="_blank" rel="noopener">
+              <img src="{{ order.payment.receipt_image.url }}" alt="إيصال التحويل" style="max-width:220px;border-radius:8px;border:1px solid var(--color-border);margin:8px 0;">
+            </a>
+          {% else %}
+            <p class="text-muted" style="font-size:0.85rem;">لم يتم رفع إيصال تحويل لهذا الطلب.</p>
+          {% endif %}
+          {% if order.payment.status != 'paid' %}
+            <form method="post" action="{% url 'dashboard:payment_confirm' order.pk %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary btn-sm">تأكيد استلام التحويل</button>
+            </form>
+          {% endif %}
+        {% endif %}
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card__title">العميل</div>
+        <p class="text-muted" style="font-size:0.88rem;line-height:1.7">
+          {{ order.full_name }}<br>
+          {{ order.email }}<br>
+          {{ order.phone }}<br>
+          {{ order.address }}, {{ order.city }}
+        </p>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card__title">المرتجعات</div>
+        {% for r in order.return_requests.all %}
+          <p style="font-size:0.85rem;margin-bottom:8px;">
+            <a href="{% url 'dashboard:return_detail' r.pk %}">#{{ r.id }}</a>
+            &middot; {{ r.get_reason_display }}
+            &middot; <span class="badge badge-{{ r.status }}">{{ r.get_status_display }}</span>
+          </p>
+        {% empty %}
+          <p class="text-muted" style="font-size:0.85rem;">لا توجد طلبات إرجاع لهذا الطلب حتى الآن.</p>
+        {% endfor %}
+        <a href="{% url 'dashboard:return_create' order.pk %}" class="btn btn-outline btn-sm" style="margin-top:6px">+ تسجيل إرجاع</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

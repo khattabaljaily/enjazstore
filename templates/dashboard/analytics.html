@@ -1,0 +1,71 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}تحليلات الزوار{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>تحليلات الزوار</h1>
+      <p>زيارات الموقع، الزوار الفريدون، وأماكن تصفحهم.</p>
+    </div>
+    <div class="pill-filters">
+      {% for range in allowed_ranges %}
+        <a href="?days={{ range }}" class="{% if days == range %}is-active{% endif %}">آخر {{ range }} يوم</a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card kpi-card--accent">
+      <div class="kpi-card__label">إجمالي الزيارات</div>
+      <div class="kpi-card__value">{{ total_visits }}</div>
+      <div class="kpi-card__meta">آخر {{ days }} يوم</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card__label">الزوار الفريدون</div>
+      <div class="kpi-card__value">{{ unique_visitors }}</div>
+      <div class="kpi-card__meta">تقريبي — يتم احتساب الزوار المجهولين لكل يوم</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card__label">مسجلون</div>
+      <div class="kpi-card__value">{{ registered_count }}</div>
+      <div class="kpi-card__meta">زيارات أثناء تسجيل الدخول</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card__label">مجهولون</div>
+      <div class="kpi-card__value">{{ anonymous_count }}</div>
+      <div class="kpi-card__meta">زيارات دون تسجيل الدخول</div>
+    </div>
+  </div>
+
+  <div class="dash-card">
+    <div class="dash-card__title">الزيارات عبر الزمن</div>
+    <div class="bar-chart">
+      {% for point in chart %}
+        <div class="bar-chart__col" title="{{ point.label }}: {{ point.value }} زيارة">
+          <div class="bar-chart__bar" style="height:{{ point.height }}%"></div>
+          <span class="bar-chart__label">{{ point.label }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="dash-card" style="margin-top:20px;">
+    <div class="dash-card__title">أكثر المواقع الجغرافية</div>
+    <div class="dash-table-wrap" style="border:none;padding:0;">
+      <table class="dash-table">
+        <thead><tr><th>الموقع</th><th>الزيارات</th></tr></thead>
+        <tbody>
+          {% for row in top_locations %}
+            <tr>
+              <td>{{ row.location|default:"غير معروف" }}</td>
+              <td>{{ row.count }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="2" class="text-muted">لا توجد زيارات مسجلة لهذه الفترة حتى الآن.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

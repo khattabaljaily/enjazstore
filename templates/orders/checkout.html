@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load price_tags %}
+
+{% block title %}إتمام الطلب · إنجاز{% endblock %}
+
+{% block content %}
+  <div class="page">
+    <h1 class="section-title">إتمام الطلب</h1>
+
+    {% include "ads/_banner.html" with banner=banners.checkout variant="wide" width=1200 height=140 %}
+
+    <div class="checkout-layout">
+      <div class="checkout-card">
+        <h2 style="font-size:1.05rem">بيانات الشحن</h2>
+        <form method="post" enctype="multipart/form-data" novalidate>
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group">
+              <label for="{{ form.full_name.id_for_label }}">الاسم الكامل</label>
+              {{ form.full_name }}
+              {% for error in form.full_name.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="form-group">
+              <label for="{{ form.phone.id_for_label }}">رقم الهاتف</label>
+              {{ form.phone }}
+              {% for error in form.phone.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">البريد الإلكتروني</label>
+            {{ form.email }}
+            {% for error in form.email.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.address.id_for_label }}">العنوان</label>
+            {{ form.address }}
+            {% for error in form.address.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.city.id_for_label }}">المدينة</label>
+            {{ form.city }}
+            {% for error in form.city.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+          </div>
+
+          <div class="form-group">
+            <label>الدفع عبر التحويل البنكي</label>
+            <div class="payment-options" id="payment-options">
+              <div class="payment-option" style="display:block; line-height:1.9;">
+                <strong>البنك:</strong> {{ site_settings.bank_name }}<br>
+                {% if site_settings.bank_account_name %}<strong>اسم الحساب:</strong> {{ site_settings.bank_account_name }}<br>{% endif %}
+                {% if site_settings.bank_account_number %}<strong>رقم الحساب:</strong> {{ site_settings.bank_account_number }}<br>{% endif %}
+                {% if site_settings.bank_transfer_note %}<span class="text-muted">{{ site_settings.bank_transfer_note }}</span>{% endif %}
+              </div>
+            </div>
+            <p class="text-muted">مدة التوصيل التقريبية: {{ site_settings.delivery_estimate }} (الشحن من خارج السودان).</p>
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.receipt_image.id_for_label }}">صورة إيصال التحويل</label>
+            {{ form.receipt_image }}
+            <p class="text-muted">ارفع صورة واضحة لإيصال التحويل حتى نتمكن من تأكيد الدفع بسرعة.</p>
+            {% for error in form.receipt_image.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">تأكيد الطلب</button>
+        </form>
+      </div>
+
+      <div class="order-list-card">
+        <h2 style="font-size:1.05rem">ملخص الطلب</h2>
+        {% for item in cart.items.all %}
+          <div class="order-line">
+            <span class="order-line__label">{{ item.quantity }} &times; {{ item.variant.product.name }}{% if item.variant.size or item.variant.color %} ({{ item.variant.size }} {{ item.variant.color }}){% endif %}</span>
+            <span class="order-line__amount">{{ item.subtotal|money }} ج.س</span>
+          </div>
+        {% endfor %}
+        <div class="summary-row">
+          <span>المجموع الفرعي</span>
+          <span>{{ cart.total_price|money }} ج.س</span>
+        </div>
+        {% if coupon %}
+          <div class="summary-row">
+            <span>الخصم ({{ coupon.code }})</span>
+            <span>&minus;{{ discount_amount|money }} ج.س</span>
+          </div>
+        {% endif %}
+        <div class="summary-row total">
+          <span>الإجمالي</span>
+          <span>{{ total_after_discount|money }} ج.س</span>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

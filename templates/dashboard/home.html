@@ -1,0 +1,128 @@
+{% extends "dashboard/base.html" %}
+{% load price_tags %}
+
+{% block page_title %}لوحة التحكم{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>مرحبًا بعودتك، {{ user.first_name|default:user.username }}</h1>
+      <p>إليك ما يحدث في متجرك اليوم.</p>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card kpi-card--accent">
+      <div class="kpi-card__label">إجمالي الإيرادات</div>
+      <div class="kpi-card__value">ج.س {{ revenue|money }}</div>
+      <div class="kpi-card__meta">عبر {{ orders_count }} طلب</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card__label">طلبات معلّقة</div>
+      <div class="kpi-card__value">{{ pending_orders }}</div>
+      <div class="kpi-card__meta">{{ processing_orders }} قيد المعالجة</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card__label">المنتجات</div>
+      <div class="kpi-card__value">{{ products_count }}</div>
+      <div class="kpi-card__meta">{{ low_stock|length }} منخفض المخزون</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-card__label">العملاء</div>
+      <div class="kpi-card__value">{{ customers_count }}</div>
+      <div class="kpi-card__meta">حسابات مسجلة</div>
+    </div>
+  </div>
+
+  <div class="dash-grid">
+    <div class="dash-card">
+      <div class="dash-card__head">
+        <div>
+          <div class="dash-card__title">الإيرادات، آخر 14 يومًا</div>
+          <span class="text-muted" style="font-size:0.8rem">باستثناء الطلبات الملغاة</span>
+        </div>
+      </div>
+      <div class="bar-chart">
+        {% for point in chart %}
+          <div class="bar-chart__col" title="{{ point.label }}: ج.س {{ point.value|money }}">
+            <div class="bar-chart__bar" style="height:{{ point.height }}%"></div>
+            <span class="bar-chart__label">{{ point.label }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-card__title">المنتجات الأكثر مبيعًا</div>
+      {% if top_products %}
+        <div class="dash-table-wrap" style="border:none;padding:0;">
+          <table class="dash-table">
+            <tbody>
+              {% for p in top_products %}
+                <tr>
+                  <td class="wrap">{{ p.product_name }}</td>
+                  <td>{{ p.qty }} مباع</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted" style="font-size:0.85rem">لا توجد مبيعات بعد.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="dash-grid" style="margin-top:20px;">
+    <div class="dash-card">
+      <div class="dash-card__head">
+        <div class="dash-card__title">أحدث الطلبات</div>
+        <a href="{% url 'dashboard:order_list' %}" class="btn btn-outline btn-sm">عرض الكل</a>
+      </div>
+      {% if recent_orders %}
+        <div class="dash-table-wrap" style="border:none;padding:0;">
+          <table class="dash-table">
+            <thead>
+              <tr><th>الطلب</th><th>العميل</th><th>الحالة</th><th>الإجمالي</th></tr>
+            </thead>
+            <tbody>
+              {% for order in recent_orders %}
+                <tr onclick="window.location='{% url 'dashboard:order_detail' order.pk %}'" style="cursor:pointer">
+                  <td>#{{ order.id }}</td>
+                  <td>{{ order.full_name }}</td>
+                  <td><span class="badge badge-{{ order.status }}">{{ order.get_status_display }}</span></td>
+                  <td>ج.س {{ order.total|money }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted" style="font-size:0.85rem">لا توجد طلبات بعد.</p>
+      {% endif %}
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-card__title">مخزون منخفض</div>
+      {% if low_stock %}
+        <div class="dash-table-wrap" style="border:none;padding:0;">
+          <table class="dash-table">
+            <tbody>
+              {% for variant in low_stock %}
+                <tr>
+                  <td class="wrap">
+                    {{ variant.product.name }}
+                    {% if variant.size or variant.color %}<br><span class="text-muted" style="font-size:0.78rem">{{ variant.size }} {{ variant.color }}</span>{% endif %}
+                  </td>
+                  <td>متبقٍ {{ variant.stock }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted" style="font-size:0.85rem">جميع المتغيرات بمخزون جيد.</p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

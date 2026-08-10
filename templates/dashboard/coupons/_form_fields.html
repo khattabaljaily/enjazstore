@@ -1,0 +1,61 @@
+<form method="post" action="{{ request.path }}">
+  {% csrf_token %}
+  <div class="form-row">
+    <div class="form-group">
+      <label for="{{ form.code.id_for_label }}">الرمز</label>
+      {{ form.code }}
+      {% for error in form.code.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="form-group">
+      <label for="{{ form.amount.id_for_label }}">قيمة الخصم (ج.س)</label>
+      {{ form.amount }}
+      {% for error in form.amount.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="{{ form.minimum_order_amount.id_for_label }}">الحد الأدنى لقيمة الطلب (ج.س)</label>
+    {{ form.minimum_order_amount }}
+    <p class="text-muted" style="font-size:0.82rem;margin-top:4px;">اتركه فارغًا لعدم وجود حد أدنى.</p>
+    {% for error in form.minimum_order_amount.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="{{ form.valid_from.id_for_label }}">صالح من</label>
+      {{ form.valid_from }}
+      {% for error in form.valid_from.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="form-group">
+      <label for="{{ form.valid_until.id_for_label }}">صالح حتى</label>
+      {{ form.valid_until }}
+      {% for error in form.valid_until.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="{{ form.max_redemptions.id_for_label }}">الحد الأقصى لإجمالي الاستخدام</label>
+      {{ form.max_redemptions }}
+      <p class="text-muted" style="font-size:0.82rem;margin-top:4px;">فارغ = بلا حدود.</p>
+      {% for error in form.max_redemptions.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+    </div>
+    <div class="form-group">
+      <label for="{{ form.max_redemptions_per_customer.id_for_label }}">الحد الأقصى للاستخدام لكل عميل</label>
+      {{ form.max_redemptions_per_customer }}
+      <p class="text-muted" style="font-size:0.82rem;margin-top:4px;">فارغ = بلا حدود.</p>
+      {% for error in form.max_redemptions_per_customer.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+    </div>
+  </div>
+
+  <div class="form-group checkbox-row">
+    {{ form.is_active }}
+    <label for="{{ form.is_active.id_for_label }}" style="margin:0">نشط</label>
+    {% for error in form.is_active.errors %}<p class="form-errors">{{ error }}</p>{% endfor %}
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">حفظ الكوبون</button>
+    <a href="{% url 'dashboard:coupon_list' %}" class="btn btn-outline">إلغاء</a>
+  </div>
+</form>

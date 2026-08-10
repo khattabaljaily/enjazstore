@@ -1,0 +1,21 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}تأكيد الحذف{% endblock %}
+
+{% block content %}
+  <div class="dash-card" style="max-width:480px;margin:0 auto;">
+    <h2>{{ title|default:"هل أنت متأكد؟" }}</h2>
+    {% if warning %}
+      <p class="text-muted">{{ warning }}</p>
+    {% else %}
+      <p class="text-muted">لا يمكن التراجع عن هذا الإجراء.</p>
+    {% endif %}
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-actions">
+        <button type="submit" class="btn btn-danger">نعم، احذف</button>
+        <a href="{{ cancel_url }}" class="btn btn-outline">إلغاء</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

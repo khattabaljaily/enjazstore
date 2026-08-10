@@ -1,0 +1,14 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}{{ customer.get_full_name|default:customer.username }}{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <h1>{{ customer.get_full_name|default:customer.username }}</h1>
+    <a href="{% url 'dashboard:customer_list' %}" class="btn btn-outline">&rarr; العودة إلى العملاء</a>
+  </div>
+
+  <div class="dash-card">
+    {% include "dashboard/customers/_detail_fields.html" %}
+  </div>
+{% endblock %}

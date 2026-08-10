@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}تفعيل المصادقة الثنائية · إنجاز{% endblock %}
+
+{% block content %}
+  <div class="auth-card">
+    <h1 class="section-title" style="font-size:1.4rem">تفعيل المصادقة الثنائية</h1>
+    <p class="helptext" style="margin-bottom:16px">
+      امسح رمز QR هذا باستخدام تطبيق مصادقة (مثل Google Authenticator أو Authy)، ثم أدخل الرمز المكوّن من 6 أرقام الذي يظهر فيه للتأكيد.
+    </p>
+
+    <div style="text-align:center;margin-bottom:16px;">
+      <img src="{{ qr_data_uri }}" alt="رمز QR للمصادقة الثنائية" style="width:200px;height:200px;">
+    </div>
+
+    <p class="helptext" style="margin-bottom:16px;text-align:center;">
+      تعذّر مسح الرمز؟ أدخل هذا المفتاح يدويًا: <code>{{ secret }}</code>
+    </p>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="code">رمز التحقق</label>
+        <input type="text" id="code" name="code" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">تفعيل المصادقة الثنائية</button>
+    </form>
+    <p class="auth-card__footer"><a href="{% url 'accounts:profile' %}">&larr; العودة إلى حسابي</a></p>
+  </div>
+{% endblock %}
