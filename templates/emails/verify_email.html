@@ -3,17 +3,17 @@
 {% block subject %}تأكيد البريد الإلكتروني{% endblock %}
 
 {% block content %}
-<p style="margin:0 0 4px; font-family:'Cairo',Arial,sans-serif; font-weight:800; font-size:22px; color:#1e1b4b;">مرحبًا {{ user.get_full_name|default:user.username }}،</p>
-<p style="margin:0 0 24px; color:#62787a;">شكرًا لإنشائك حسابًا في إنجاز. يُرجى تأكيد بريدك الإلكتروني لإتمام إعداد حسابك.</p>
+<p style="margin:0 0 4px; font-family:'Noto Kufi Arabic',Arial,sans-serif; font-weight:800; font-size:22px; color:#14120f;">مرحبًا {{ user.get_full_name|default:user.username }}،</p>
+<p style="margin:0 0 24px; color:#7a7266;">شكرًا لإنشائك حسابًا في إنجاز. يُرجى تأكيد بريدك الإلكتروني لإتمام إعداد حسابك.</p>
 
 <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;">
   <tr>
-    <td style="border-radius:8px; background-color:#4338ca;">
-      <a href="{{ verify_url }}" style="display:inline-block; padding:12px 28px; font-family:'Cairo',Arial,sans-serif; font-weight:700; font-size:14px; color:#ffffff; text-decoration:none;">تأكيد البريد الإلكتروني</a>
+    <td style="border-radius:8px; background-color:#14120f;">
+      <a href="{{ verify_url }}" style="display:inline-block; padding:12px 28px; font-family:'Noto Kufi Arabic',Arial,sans-serif; font-weight:700; font-size:14px; color:#ffffff; text-decoration:none;">تأكيد البريد الإلكتروني</a>
     </td>
   </tr>
 </table>
 
-<p style="margin:24px 0 0; color:#62787a; font-size:13px;">إذا لم يعمل الزر، انسخ الرابط التالي والصقه في متصفحك:<br>
-<a href="{{ verify_url }}" style="color:#4338ca; word-break:break-all;">{{ verify_url }}</a></p>
+<p style="margin:24px 0 0; color:#7a7266; font-size:13px;">إذا لم يعمل الزر، انسخ الرابط التالي والصقه في متصفحك:<br>
+<a href="{{ verify_url }}" style="color:#14120f; word-break:break-all;">{{ verify_url }}</a></p>
 {% endblock %}

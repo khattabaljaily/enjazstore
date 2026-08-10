@@ -4,49 +4,49 @@
 
 {% block ribbon %}
 <tr>
-  <td style="background-color:#4338ca; padding:12px 40px; text-align:center;">
-    <span style="font-family:'Cairo',Arial,sans-serif; font-weight:700; font-size:13px; letter-spacing:0.06em; text-transform:uppercase; color:#ffffff;">&#10003; تم تأكيد الطلب</span>
+  <td style="background-color:#14120f; padding:12px 40px; text-align:center;">
+    <span style="font-family:'Noto Kufi Arabic',Arial,sans-serif; font-weight:700; font-size:13px; letter-spacing:0.06em; text-transform:uppercase; color:#ffffff;">&#10003; تم تأكيد الطلب</span>
   </td>
 </tr>
 {% endblock %}
 
 {% block content %}
-<p style="margin:0 0 4px; font-family:'Cairo',Arial,sans-serif; font-weight:800; font-size:22px; color:#1e1b4b;">شكرًا لك، {{ order.full_name }}!</p>
-<p style="margin:0 0 24px; color:#62787a;">تم استلام طلبك وجارٍ تجهيزه.</p>
+<p style="margin:0 0 4px; font-family:'Noto Kufi Arabic',Arial,sans-serif; font-weight:800; font-size:22px; color:#14120f;">شكرًا لك، {{ order.full_name }}!</p>
+<p style="margin:0 0 24px; color:#7a7266;">تم استلام طلبك وجارٍ تجهيزه.</p>
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
   <tr>
-    <td style="font-size:13px; color:#62787a;">رقم الطلب</td>
-    <td align="right" style="font-size:13px; color:#15262b; font-weight:600;">#{{ order.id }}</td>
+    <td style="font-size:13px; color:#7a7266;">رقم الطلب</td>
+    <td align="right" style="font-size:13px; color:#14120f; font-weight:600;">#{{ order.id }}</td>
   </tr>
   <tr>
-    <td style="font-size:13px; color:#62787a; padding-top:4px;">تاريخ الطلب</td>
-    <td align="right" style="font-size:13px; color:#15262b; font-weight:600; padding-top:4px;">{{ order.created_at|date:"M d, Y" }}</td>
+    <td style="font-size:13px; color:#7a7266; padding-top:4px;">تاريخ الطلب</td>
+    <td align="right" style="font-size:13px; color:#14120f; font-weight:600; padding-top:4px;">{{ order.created_at|date:"M d, Y" }}</td>
   </tr>
   <tr>
-    <td style="font-size:13px; color:#62787a; padding-top:4px;">طريقة الدفع</td>
-    <td align="right" style="font-size:13px; color:#15262b; font-weight:600; padding-top:4px;">{{ payment_method_label }}</td>
+    <td style="font-size:13px; color:#7a7266; padding-top:4px;">طريقة الدفع</td>
+    <td align="right" style="font-size:13px; color:#14120f; font-weight:600; padding-top:4px;">{{ payment_method_label }}</td>
   </tr>
 </table>
 
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e7edec; border-bottom:1px solid #e7edec; margin-bottom:20px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e7e1d4; border-bottom:1px solid #e7e1d4; margin-bottom:20px;">
   {% for item in items %}
   <tr>
-    <td style="padding:12px 0; border-bottom:1px solid #e7edec; font-size:14px; color:#15262b;">
-      {{ item.product_name }}{% if item.variant_label %}<br><span style="font-size:12px; color:#62787a;">{{ item.variant_label }}</span>{% endif %}
+    <td style="padding:12px 0; border-bottom:1px solid #e7e1d4; font-size:14px; color:#14120f;">
+      {{ item.product_name }}{% if item.variant_label %}<br><span style="font-size:12px; color:#7a7266;">{{ item.variant_label }}</span>{% endif %}
     </td>
-    <td align="center" style="padding:12px 0; border-bottom:1px solid #e7edec; font-size:14px; color:#62787a; white-space:nowrap;">&times;{{ item.quantity }}</td>
-    <td align="right" style="padding:12px 0; border-bottom:1px solid #e7edec; font-size:14px; color:#15262b; white-space:nowrap;">{{ item.subtotal|floatformat:2 }} ج.س</td>
+    <td align="center" style="padding:12px 0; border-bottom:1px solid #e7e1d4; font-size:14px; color:#7a7266; white-space:nowrap;">&times;{{ item.quantity }}</td>
+    <td align="right" style="padding:12px 0; border-bottom:1px solid #e7e1d4; font-size:14px; color:#14120f; white-space:nowrap;">{{ item.subtotal|floatformat:2 }} ج.س</td>
   </tr>
   {% endfor %}
   <tr>
-    <td colspan="2" style="padding:14px 0 0; font-family:'Cairo',Arial,sans-serif; font-weight:700; font-size:16px; color:#1e1b4b;">الإجمالي</td>
-    <td align="right" style="padding:14px 0 0; font-family:'Cairo',Arial,sans-serif; font-weight:700; font-size:16px; color:#4338ca;">{{ order.total|floatformat:2 }} ج.س</td>
+    <td colspan="2" style="padding:14px 0 0; font-family:'Noto Kufi Arabic',Arial,sans-serif; font-weight:700; font-size:16px; color:#14120f;">الإجمالي</td>
+    <td align="right" style="padding:14px 0 0; font-family:'Noto Kufi Arabic',Arial,sans-serif; font-weight:700; font-size:16px; color:#14120f;">{{ order.total|floatformat:2 }} ج.س</td>
   </tr>
 </table>
 
-<p style="margin:0 0 6px; font-weight:600; color:#1e1b4b;">الشحن إلى</p>
-<p style="margin:0 0 24px; color:#62787a;">
+<p style="margin:0 0 6px; font-weight:600; color:#14120f;">الشحن إلى</p>
+<p style="margin:0 0 24px; color:#7a7266;">
   {{ order.full_name }}<br>
   {{ order.address }}, {{ order.city }}<br>
   {{ order.phone }}
@@ -54,8 +54,8 @@
 
 <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;">
   <tr>
-    <td style="border-radius:8px; background-color:#4338ca;">
-      <a href="{{ order_url }}" style="display:inline-block; padding:12px 28px; font-family:'Cairo',Arial,sans-serif; font-weight:700; font-size:14px; color:#ffffff; text-decoration:none;">عرض طلبك</a>
+    <td style="border-radius:8px; background-color:#14120f;">
+      <a href="{{ order_url }}" style="display:inline-block; padding:12px 28px; font-family:'Noto Kufi Arabic',Arial,sans-serif; font-weight:700; font-size:14px; color:#ffffff; text-decoration:none;">عرض طلبك</a>
     </td>
   </tr>
 </table>

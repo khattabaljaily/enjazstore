@@ -1,43 +1,43 @@
 /* ==========================================================================
-   E LINK — staff dashboard
+   إنجاز (Enjaz) — staff dashboard
    Separate from the storefront stylesheet: this is a data-dense internal
    tool, not a customer-facing page, so it gets its own layout language
    while keeping the same brand tokens.
    ========================================================================== */
 
 :root {
-  --color-primary: #4338ca;
-  --color-primary-dark: #362f9e;
-  --color-primary-light: #ecebfb;
-  --color-secondary: #16a34a;
-  --color-accent: #f5a524;
-  --color-accent-dark: #c97f13;
-  --color-navy: #1e1b4b;
-  --color-navy-light: #312e81;
+  --color-primary: #14120f;
+  --color-primary-dark: #0a0906;
+  --color-primary-light: #efe9dc;
+  --color-secondary: #4b7a51;
+  --color-accent: #b8892f;
+  --color-accent-dark: #96701f;
+  --color-navy: #14120f;
+  --color-navy-light: #2b2620;
 
-  --gradient-primary: linear-gradient(135deg, #4338ca 0%, #7c3aed 100%);
-  --gradient-navy: linear-gradient(160deg, #17153a 0%, #312e81 100%);
+  --gradient-primary: linear-gradient(135deg, #14120f 0%, #2b2620 100%);
+  --gradient-navy: linear-gradient(160deg, #0a0906 0%, #2b2620 100%);
 
-  --color-bg: #f3f6f6;
+  --color-bg: #f6f4ee;
   --color-surface: #ffffff;
-  --color-border: #e6ebea;
-  --color-text: #16262a;
-  --color-text-muted: #64787a;
+  --color-border: #e6e0d3;
+  --color-text: #1c1912;
+  --color-text-muted: #7a7266;
   --color-text-inverse: #ffffff;
 
   --color-danger: #e0473a;
   --color-danger-light: #fbeae8;
 
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --shadow-sm: 0 1px 3px rgba(30, 27, 75, 0.06);
-  --shadow-md: 0 10px 24px -8px rgba(30, 27, 75, 0.14);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 3px rgba(20, 18, 15, 0.06);
+  --shadow-md: 0 10px 24px -8px rgba(20, 18, 15, 0.14);
   --sidebar-width: 240px;
   --topbar-height: 68px;
   --transition: 160ms ease;
-  --font-sans: "Cairo", -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Arial, sans-serif;
-  --font-display: "Cairo", var(--font-sans);
+  --font-sans: "Noto Kufi Arabic", -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Arial, sans-serif;
+  --font-display: "Noto Kufi Arabic", var(--font-sans);
 }
 
 * , *::before, *::after { box-sizing: border-box; }
@@ -290,9 +290,9 @@ p { margin: 0 0 1em; }
   border: 1px solid transparent;
 }
 
-.alert-success { background: var(--color-primary-light); color: var(--color-primary-dark); border-color: rgba(67, 56, 202, 0.25); }
-.alert-info { background: #eaf3f7; color: var(--color-navy-light); border-color: rgba(49, 46, 129, 0.2); }
-.alert-warning { background: #fef6e0; color: var(--color-accent-dark); border-color: rgba(245, 165, 36, 0.3); }
+.alert-success { background: var(--color-primary-light); color: var(--color-primary-dark); border-color: rgba(20, 18, 15, 0.25); }
+.alert-info { background: #efe9dc; color: var(--color-navy-light); border-color: rgba(43, 38, 32, 0.2); }
+.alert-warning { background: #fef6e0; color: var(--color-accent-dark); border-color: rgba(184, 137, 47, 0.3); }
 .alert-error, .alert-danger { background: var(--color-danger-light); color: var(--color-danger); border-color: rgba(224, 71, 58, 0.25); }
 
 /* --------------------------------------------------------------------------
@@ -664,15 +664,15 @@ input[type="checkbox"] { width: auto; margin-left: 8px; }
 }
 
 .badge-pending { background: #fef6e0; color: var(--color-accent-dark); }
-.badge-processing { background: #eaf3f7; color: var(--color-navy-light); }
+.badge-processing { background: #efe9dc; color: var(--color-navy-light); }
 .badge-shipped { background: var(--color-primary-light); color: var(--color-primary-dark); }
 .badge-delivered { background: var(--color-primary-light); color: var(--color-primary-dark); }
 .badge-cancelled { background: var(--color-danger-light); color: var(--color-danger); }
 .badge-approved { background: var(--color-primary-light); color: var(--color-primary-dark); }
 .badge-rejected { background: var(--color-danger-light); color: var(--color-danger); }
-.badge-completed { background: #eaf3f7; color: var(--color-navy-light); }
+.badge-completed { background: #efe9dc; color: var(--color-navy-light); }
 
-.badge-role-manager { background: #ede4fb; color: #6a3bd1; }
+.badge-role-manager { background: #efe9dc; color: #96701f; }
 .badge-role-staff { background: var(--color-bg); color: var(--color-text-muted); }
 
 .badge-active { background: var(--color-primary-light); color: var(--color-primary-dark); }
@@ -984,7 +984,7 @@ input[type="checkbox"] { width: auto; margin-left: 8px; }
   position: fixed;
   inset: 0;
   z-index: 200;
-  background: rgba(30, 27, 75, 0.55);
+  background: rgba(20, 18, 15, 0.55);
   backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
@@ -1242,7 +1242,7 @@ table.dataTable thead th:not(.no-sort) { user-select: none; }
     position: fixed;
     inset: 0;
     z-index: 210;
-    background: rgba(30, 27, 75, 0.5);
+    background: rgba(20, 18, 15, 0.5);
     opacity: 0;
     pointer-events: none;
     transition: opacity var(--transition);

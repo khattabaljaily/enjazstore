@@ -15,10 +15,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="إنجاز">
-  <meta name="theme-color" content="#4338ca">
+  <meta name="theme-color" content="#14120f">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static_versioned 'css/style.css' %}">
   <style>
     .coming-soon {
@@ -120,7 +120,7 @@
       position: absolute;
       inset: -8px;
       border-radius: 50%;
-      box-shadow: 0 0 0 0 rgba(67, 56, 202, 0.45);
+      box-shadow: 0 0 0 0 rgba(20, 18, 15, 0.45);
       z-index: -1;
     }
     .coming-soon__logo-inner {
@@ -146,8 +146,8 @@
       text-transform: uppercase;
       font-size: 0.78rem;
       color: var(--color-primary-light);
-      background: rgba(67, 56, 202, 0.16);
-      border: 1px solid rgba(67, 56, 202, 0.35);
+      background: rgba(20, 18, 15, 0.16);
+      border: 1px solid rgba(20, 18, 15, 0.35);
       padding: 6px 14px;
       border-radius: 999px;
       margin-bottom: 20px;
@@ -156,7 +156,7 @@
       width: 7px; height: 7px;
       border-radius: 50%;
       background: var(--color-secondary);
-      box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6);
+      box-shadow: 0 0 0 0 rgba(75, 122, 81, 0.6);
       flex-shrink: 0;
     }
 
@@ -166,7 +166,7 @@
       font-size: clamp(1.9rem, 4vw, 2.5rem);
       line-height: 1.15;
       margin: 0 0 16px;
-      background: linear-gradient(135deg, #ffffff 0%, #dcdafc 55%, var(--color-primary-light) 100%);
+      background: linear-gradient(135deg, #ffffff 0%, #d9b25c 55%, var(--color-primary-light) 100%);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -264,13 +264,13 @@
     @keyframes pop-in { to { opacity: 1; transform: scale(1); } }
     @keyframes spin-ring { to { transform: rotate(360deg); } }
     @keyframes ring-pulse {
-      0% { box-shadow: 0 0 0 0 rgba(67, 56, 202, 0.45); }
-      100% { box-shadow: 0 0 0 18px rgba(67, 56, 202, 0); }
+      0% { box-shadow: 0 0 0 0 rgba(20, 18, 15, 0.45); }
+      100% { box-shadow: 0 0 0 18px rgba(20, 18, 15, 0); }
     }
     @keyframes fade-up { to { opacity: 1; transform: translateY(0); } }
     @keyframes dot-pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.55); }
-      50% { box-shadow: 0 0 0 5px rgba(22, 163, 74, 0); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(75, 122, 81, 0.55); }
+      50% { box-shadow: 0 0 0 5px rgba(75, 122, 81, 0); }
     }
     @keyframes line-travel { to { stroke-dashoffset: -32; } }
     @keyframes node-pulse {
@@ -299,7 +299,7 @@
     <div class="coming-soon__card">
       <div class="coming-soon__logo-ring">
         <div class="coming-soon__logo-inner">
-          <img src="{% static 'img/logo/logo.png' %}" alt="إنجاز" class="coming-soon__logo">
+          <img src="{% static 'img/logo/logo-white.png' %}" alt="إنجاز" class="coming-soon__logo">
         </div>
       </div>
 

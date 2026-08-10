@@ -5,7 +5,7 @@ from .models import User
 
 
 @admin.register(User)
-class ELinkUserAdmin(UserAdmin):
+class EnjazUserAdmin(UserAdmin):
     fieldsets = UserAdmin.fieldsets + (
         ('Contact info', {'fields': ('phone', 'address', 'city')}),
         ('Dashboard role', {'fields': ('role',)}),

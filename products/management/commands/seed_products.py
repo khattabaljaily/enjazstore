@@ -14,7 +14,7 @@ from products.models import Category, Product, ProductImage, Variant
 
 SEED_MARKER = '[seed_products demo item]'
 
-USER_AGENT = 'ELINK-DemoSeeder/1.0 (local dev catalog seeding)'
+USER_AGENT = 'EnjazStore-DemoSeeder/1.0 (local dev catalog seeding)'
 
 # Categories backed by DummyJSON (https://dummyjson.com) - a public demo/prototyping
 # API purpose-built for e-commerce mockups, with real curated product photos (no

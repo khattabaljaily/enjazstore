@@ -60,7 +60,7 @@
         <h2 style="font-size:1.05rem">مسجّل الدخول بـ</h2>
         <p class="text-muted" style="font-size:0.9rem">{{ user.email }}</p>
         {% if user.is_email_verified %}
-          <p style="font-size:0.85rem;color:#4338ca;font-weight:600;margin-top:4px;">&#10003; تم التحقق من البريد الإلكتروني</p>
+          <p style="font-size:0.85rem;color:#14120f;font-weight:600;margin-top:4px;">&#10003; تم التحقق من البريد الإلكتروني</p>
         {% else %}
           <p style="font-size:0.85rem;color:#e0473a;font-weight:600;margin-top:4px;">لم يتم التحقق من البريد الإلكتروني</p>
           <form method="post" action="{% url 'accounts:resend_verification' %}">
@@ -72,7 +72,7 @@
         {% if user.is_staff %}
           <h2 style="font-size:1.05rem;margin-top:24px">المصادقة الثنائية</h2>
           {% if user.totp_enabled %}
-            <p style="font-size:0.85rem;color:#4338ca;font-weight:600;margin-bottom:8px;">&#10003; مُفعّلة</p>
+            <p style="font-size:0.85rem;color:#14120f;font-weight:600;margin-bottom:8px;">&#10003; مُفعّلة</p>
             <form method="post" action="{% url 'accounts:two_factor_disable' %}">
               {% csrf_token %}
               <div class="form-group">

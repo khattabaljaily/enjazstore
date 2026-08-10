@@ -4,34 +4,34 @@
 
 {% block ribbon %}
 <tr>
-  <td style="background-color:#312e81; padding:12px 40px; text-align:center;">
-    <span style="font-family:'Cairo',Arial,sans-serif; font-weight:700; font-size:13px; letter-spacing:0.06em; text-transform:uppercase; color:#ffffff;">تم استلام طلب جديد</span>
+  <td style="background-color:#2b2620; padding:12px 40px; text-align:center;">
+    <span style="font-family:'Noto Kufi Arabic',Arial,sans-serif; font-weight:700; font-size:13px; letter-spacing:0.06em; text-transform:uppercase; color:#ffffff;">تم استلام طلب جديد</span>
   </td>
 </tr>
 {% endblock %}
 
 {% block content %}
-<p style="margin:0 0 4px; font-family:'Cairo',Arial,sans-serif; font-weight:800; font-size:22px; color:#1e1b4b;">الطلب #{{ order.id }}</p>
-<p style="margin:0 0 24px; color:#62787a;">قام {{ order.full_name }} للتو بطلب بقيمة {{ order.total|floatformat:2 }} ج.س.</p>
+<p style="margin:0 0 4px; font-family:'Noto Kufi Arabic',Arial,sans-serif; font-weight:800; font-size:22px; color:#14120f;">الطلب #{{ order.id }}</p>
+<p style="margin:0 0 24px; color:#7a7266;">قام {{ order.full_name }} للتو بطلب بقيمة {{ order.total|floatformat:2 }} ج.س.</p>
 
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e7edec; border-bottom:1px solid #e7edec; margin-bottom:20px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e7e1d4; border-bottom:1px solid #e7e1d4; margin-bottom:20px;">
   {% for item in items %}
   <tr>
-    <td style="padding:12px 0; border-bottom:1px solid #e7edec; font-size:14px; color:#15262b;">
-      {{ item.product_name }}{% if item.variant_label %}<br><span style="font-size:12px; color:#62787a;">{{ item.variant_label }}</span>{% endif %}
+    <td style="padding:12px 0; border-bottom:1px solid #e7e1d4; font-size:14px; color:#14120f;">
+      {{ item.product_name }}{% if item.variant_label %}<br><span style="font-size:12px; color:#7a7266;">{{ item.variant_label }}</span>{% endif %}
     </td>
-    <td align="center" style="padding:12px 0; border-bottom:1px solid #e7edec; font-size:14px; color:#62787a; white-space:nowrap;">&times;{{ item.quantity }}</td>
-    <td align="right" style="padding:12px 0; border-bottom:1px solid #e7edec; font-size:14px; color:#15262b; white-space:nowrap;">{{ item.subtotal|floatformat:2 }} ج.س</td>
+    <td align="center" style="padding:12px 0; border-bottom:1px solid #e7e1d4; font-size:14px; color:#7a7266; white-space:nowrap;">&times;{{ item.quantity }}</td>
+    <td align="right" style="padding:12px 0; border-bottom:1px solid #e7e1d4; font-size:14px; color:#14120f; white-space:nowrap;">{{ item.subtotal|floatformat:2 }} ج.س</td>
   </tr>
   {% endfor %}
   <tr>
-    <td colspan="2" style="padding:14px 0 0; font-family:'Cairo',Arial,sans-serif; font-weight:700; font-size:16px; color:#1e1b4b;">الإجمالي</td>
-    <td align="right" style="padding:14px 0 0; font-family:'Cairo',Arial,sans-serif; font-weight:700; font-size:16px; color:#4338ca;">{{ order.total|floatformat:2 }} ج.س</td>
+    <td colspan="2" style="padding:14px 0 0; font-family:'Noto Kufi Arabic',Arial,sans-serif; font-weight:700; font-size:16px; color:#14120f;">الإجمالي</td>
+    <td align="right" style="padding:14px 0 0; font-family:'Noto Kufi Arabic',Arial,sans-serif; font-weight:700; font-size:16px; color:#14120f;">{{ order.total|floatformat:2 }} ج.س</td>
   </tr>
 </table>
 
-<p style="margin:0 0 6px; font-weight:600; color:#1e1b4b;">الشحن إلى</p>
-<p style="margin:0 0 24px; color:#62787a;">
+<p style="margin:0 0 6px; font-weight:600; color:#14120f;">الشحن إلى</p>
+<p style="margin:0 0 24px; color:#7a7266;">
   {{ order.full_name }}<br>
   {{ order.address }}, {{ order.city }}<br>
   {{ order.phone }}
@@ -39,8 +39,8 @@
 
 <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;">
   <tr>
-    <td style="border-radius:8px; background-color:#312e81;">
-      <a href="{{ order_url }}" style="display:inline-block; padding:12px 28px; font-family:'Cairo',Arial,sans-serif; font-weight:700; font-size:14px; color:#ffffff; text-decoration:none;">فتح في لوحة التحكم</a>
+    <td style="border-radius:8px; background-color:#2b2620;">
+      <a href="{{ order_url }}" style="display:inline-block; padding:12px 28px; font-family:'Noto Kufi Arabic',Arial,sans-serif; font-weight:700; font-size:14px; color:#ffffff; text-decoration:none;">فتح في لوحة التحكم</a>
     </td>
   </tr>
 </table>

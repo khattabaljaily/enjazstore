@@ -9,7 +9,7 @@ from django.template.loader import render_to_string
 logger = logging.getLogger(__name__)
 
 LOGO_PATH = settings.BASE_DIR / 'static' / 'img' / 'logo' / 'logo.png'
-LOGO_CID = 'elink-logo'
+LOGO_CID = 'enjaz-logo'
 
 try:
     with open(LOGO_PATH, 'rb') as _logo_file:
