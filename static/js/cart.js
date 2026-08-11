@@ -73,7 +73,7 @@
 
   function formatPrice(value) {
     const amount = Math.round(parseFloat(value));
-    return Number.isFinite(amount) ? amount.toLocaleString('ar-SD') : value;
+    return Number.isFinite(amount) ? amount.toLocaleString('en-US') : value;
   }
 
   window.CSRF_TOKEN = window.CSRF_TOKEN || (typeof CSRF_TOKEN !== 'undefined' ? CSRF_TOKEN : '');
