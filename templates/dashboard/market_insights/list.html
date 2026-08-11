@@ -1,0 +1,52 @@
+{% extends "dashboard/base.html" %}
+
+{% block page_title %}الذكاء الاصطناعي{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>تحليل السوق بالذكاء الاصطناعي</h1>
+      <p>يبحث في الويب عن المنتجات الرائجة في السودان حاليًا، ويقارن أسعارنا بأقل سعر متاح بالسوق.</p>
+    </div>
+    <form method="post" action="{% url 'dashboard:market_insight_generate' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary">+ توليد تقرير جديد</button>
+    </form>
+  </div>
+
+  {% if reports %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead>
+          <tr><th>التاريخ</th><th>بواسطة</th><th>الحالة</th><th class="no-sort"></th></tr>
+        </thead>
+        <tbody>
+          {% for report in reports %}
+            <tr>
+              <td data-label="التاريخ">{{ report.created_at|date:"d M Y — H:i" }}</td>
+              <td data-label="بواسطة">{{ report.created_by.get_full_name|default:report.created_by.username|default:"—" }}</td>
+              <td data-label="الحالة"><span class="badge badge-{{ report.status }}">{{ report.get_status_display }}</span></td>
+              <td class="card-actions">
+                <a href="{% url 'dashboard:market_insight_detail' report.pk %}" class="table-link">عرض التقرير</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if is_paginated %}
+      <nav class="dash-pagination">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}">&larr; السابق</a>
+        {% endif %}
+        <span class="is-current">{{ page_obj.number }}</span>
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}">التالي &rarr;</a>
+        {% endif %}
+      </nav>
+    {% endif %}
+  {% else %}
+    <div class="dash-empty"><p>لا توجد تقارير بعد. اضغط "توليد تقرير جديد" لبدء أول تحليل.</p></div>
+  {% endif %}
+{% endblock %}

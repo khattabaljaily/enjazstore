@@ -11,6 +11,7 @@ from .employees import (
     EmployeeUpdateView,
 )
 from .home import DashboardHomeView
+from .market_insights import MarketInsightDetailView, MarketInsightGenerateView, MarketInsightListView
 from .marketing import MarketingEmailView
 from .orders import OrderBillView, OrderDeleteView, OrderDetailView, OrderListView, PaymentConfirmView
 from .products import ProductDeleteView, ProductFormView, ProductListView
@@ -36,4 +37,5 @@ __all__ = [
     'CouponListView', 'CouponCreateView', 'CouponUpdateView', 'CouponDeleteView',
     'ReviewListView', 'ReviewDetailView',
     'MarketingEmailView',
+    'MarketInsightListView', 'MarketInsightGenerateView', 'MarketInsightDetailView',
 ]

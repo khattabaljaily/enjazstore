@@ -1,0 +1,84 @@
+{% extends "dashboard/base.html" %}
+{% load price_tags %}
+
+{% block page_title %}تقرير السوق{% endblock %}
+
+{% block content %}
+  <div class="dash-header">
+    <div>
+      <h1>تقرير السوق — {{ report.created_at|date:"d M Y — H:i" }}</h1>
+      <p><span class="badge badge-{{ report.status }}">{{ report.get_status_display }}</span></p>
+    </div>
+    <a href="{% url 'dashboard:market_insight_list' %}" class="btn btn-outline">كل التقارير</a>
+  </div>
+
+  {% if report.status == 'pending' or report.status == 'running' %}
+    <div class="dash-card">
+      <p class="text-muted" style="margin:0">
+        جارٍ البحث في الويب وتحليل السوق — عادة يستغرق دقيقة إلى دقيقتين.
+        حدّث الصفحة بعد قليل لمتابعة النتيجة.
+      </p>
+      <a href="{% url 'dashboard:market_insight_detail' report.pk %}" class="btn btn-outline btn-sm" style="margin-top:14px">تحديث</a>
+    </div>
+
+  {% elif report.status == 'failed' %}
+    <div class="alert alert-error">
+      تعذّر إتمام التحليل: {{ report.error_message|default:"خطأ غير معروف." }}
+    </div>
+
+  {% else %}
+    {% if report.content.summary %}
+      <div class="dash-card" style="margin-bottom:20px">
+        <div class="dash-card__title">الخلاصة</div>
+        <p style="margin:0">{{ report.content.summary }}</p>
+      </div>
+    {% endif %}
+
+    {% if report.content.trending %}
+      <div class="dash-card" style="margin-bottom:20px">
+        <div class="dash-card__title">المنتجات الأكثر طلبًا في السودان حاليًا</div>
+        <ul style="margin:12px 0 0; padding-inline-start:20px; list-style:disc;">
+          {% for item in report.content.trending %}
+            <li style="margin-bottom:8px"><strong>{{ item.name }}</strong> — {{ item.reason }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    {% if report.content.comparisons %}
+      <div class="dash-table-wrap" style="margin-bottom:20px">
+        <table class="dash-table">
+          <thead>
+            <tr>
+              <th>المنتج</th>
+              <th>سعرنا</th>
+              <th>أقل سعر بالسوق</th>
+              <th>المصدر</th>
+              <th>ملاحظة</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in report.content.comparisons %}
+              <tr>
+                <td data-label="المنتج">{{ row.product_name }}</td>
+                <td data-label="سعرنا">{{ row.our_price_sdg|money }} ج.س</td>
+                <td data-label="أقل سعر بالسوق">
+                  {% if row.market_low_price_sdg %}{{ row.market_low_price_sdg|money }} ج.س{% else %}—{% endif %}
+                </td>
+                <td data-label="المصدر">{{ row.market_source|default:"—" }}</td>
+                <td data-label="ملاحظة" class="wrap">{{ row.note }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+
+    {% if report.usage %}
+      <p class="text-muted" style="font-size:0.82rem">
+        استهلاك الطلب: {{ report.usage.prompt_tokens }} توكن إدخال، {{ report.usage.completion_tokens }} توكن إخراج،
+        {{ report.usage.search_calls }} عملية بحث.
+      </p>
+    {% endif %}
+  {% endif %}
+{% endblock %}

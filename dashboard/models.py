@@ -24,7 +24,7 @@ class SiteSettings(models.Model):
     bank_transfer_note = models.CharField(
         max_length=255,
         blank=True,
-        default='حوّل المبلغ عبر تطبيق بنكك (Bankak) إلى الحساب أعلاه، ثم ارفع صورة إيصال التحويل.',
+        default='حوّل المبلغ عبر تطبيق  (Bankak) إلى الحساب أعلاه، ثم ارفع صورة إيصال التحويل.',
     )
     delivery_estimate = models.CharField(max_length=100, default='2-4 أسابيع')
 
@@ -71,3 +71,41 @@ class VisitLog(models.Model):
 
     def __str__(self):
         return f'{self.created_at:%Y-%m-%d %H:%M} — {self.location or "Unknown"}'
+
+
+class MarketInsightReport(models.Model):
+    """One AI-generated snapshot of the Sudanese market: trending products and
+    a price comparison against our own catalog. Persisted so a report is only
+    ever paid for once — generation costs real money (LLM tokens + live web
+    searches), so it's manager-triggered on demand, never automatic."""
+
+    class Status(models.TextChoices):
+        PENDING = 'pending', 'قيد الانتظار'
+        RUNNING = 'running', 'جارٍ التحليل'
+        COMPLETED = 'completed', 'مكتمل'
+        FAILED = 'failed', 'فشل'
+
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='market_insight_reports',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    # {"trending": [{"name": str, "reason": str}, ...],
+    #  "comparisons": [{"product_name", "our_price_sdg", "market_low_price_sdg",
+    #                    "market_source", "note"}, ...],
+    #  "summary": str}
+    content = models.JSONField(default=dict, blank=True)
+    error_message = models.TextField(blank=True)
+
+    # Token/search-call counts from the DeepSeek response, kept for cost visibility.
+    usage = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Market insight report'
+
+    def __str__(self):
+        return f'{self.get_status_display()} — {self.created_at:%Y-%m-%d %H:%M}'

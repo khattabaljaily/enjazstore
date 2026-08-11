@@ -56,5 +56,9 @@ urlpatterns = [
 
     path('settings/', views.SiteSettingsView.as_view(), name='settings'),
 
+    path('insights/', views.MarketInsightListView.as_view(), name='market_insight_list'),
+    path('insights/generate/', views.MarketInsightGenerateView.as_view(), name='market_insight_generate'),
+    path('insights/<int:pk>/', views.MarketInsightDetailView.as_view(), name='market_insight_detail'),
+
     path('marketing/', views.MarketingEmailView.as_view(), name='marketing'),
 ]

@@ -304,3 +304,9 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+
+
+# AI market insights (dashboard) — DeepSeek does the reasoning, Tavily gives it
+# live web search (DeepSeek's own API has no server-side search tool).
+DEEPSEEK_API_KEY = secrets.get('DEEPSEEK_API_KEY', '')
+TAVILY_API_KEY = secrets.get('TAVILY_API_KEY', '')

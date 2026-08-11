@@ -75,6 +75,9 @@
           <a href="{% url 'dashboard:stock_value_report' %}" class="{% if request.resolver_match.url_name == 'stock_value_report' %}is-active{% endif %}">
             <span class="dash-nav__icon">&#128176;</span> قيمة المخزون
           </a>
+          <a href="{% url 'dashboard:market_insight_list' %}" class="{% if request.resolver_match.url_name in 'market_insight_list,market_insight_detail' %}is-active{% endif %}">
+            <span class="dash-nav__icon">&#129302;</span> الذكاء الاصطناعي
+          </a>
           <a href="{% url 'dashboard:banner_list' %}" class="{% if 'banner' in request.resolver_match.url_name %}is-active{% endif %}">
             <span class="dash-nav__icon">&#128227;</span> البانرات
           </a>
