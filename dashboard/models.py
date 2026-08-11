@@ -26,7 +26,7 @@ class SiteSettings(models.Model):
         blank=True,
         default='حوّل المبلغ عبر تطبيق بنكك (Bankak) إلى الحساب أعلاه، ثم ارفع صورة إيصال التحويل.',
     )
-    delivery_estimate = models.CharField(max_length=100, default='٢-٤ أسابيع')
+    delivery_estimate = models.CharField(max_length=100, default='2-4 أسابيع')
 
     class Meta:
         verbose_name = 'Site settings'

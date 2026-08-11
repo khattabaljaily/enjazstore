@@ -53,7 +53,7 @@ def send_abandoned_cart_reminder(cart):
 
     _send(
         'abandoned_cart_reminder',
-        subject="نسيت شيئًا في سلتك — إنجاز",
+        subject="نسيت شيئًا في سلتك — إنجاز ستور",
         to_email=cart.user.email,
         context={
             'user': cart.user,

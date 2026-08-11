@@ -13,7 +13,7 @@ with open(BASE_DIR / 'secrets.json') as secrets_file:
 SECRET_KEY = secrets['SECRET_KEY']
 DEBUG = secrets['DEBUG']
 ALLOWED_HOSTS = secrets['ALLOWED_HOSTS']
-SITE_URL = secrets.get('SITE_URL', 'https://enjazstore.com')
+SITE_URL = secrets.get('SITE_URL', 'https://store.enjaztechnology.com')
 
 # Obscured admin path. core.middleware.AdminAccessMiddleware also gates it
 # behind an existing superuser session, so even knowing this path doesn't
@@ -185,7 +185,7 @@ LOGIN_REDIRECT_URL = 'products:list'
 LOGOUT_REDIRECT_URL = 'products:list'
 
 
-# Email (Namecheap Private Email — mailboxes: noreply@, support@, info@enjazstore.com)
+# Email (Namecheap Private Email — mailboxes: no-reply@, support@, info@enjaztechnology.com)
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.privateemail.com'
@@ -194,8 +194,11 @@ EMAIL_USE_TLS = True
 EMAIL_TIMEOUT = 10
 EMAIL_HOST_USER = secrets['EMAIL']['HOST_USER']
 EMAIL_HOST_PASSWORD = secrets['EMAIL']['HOST_PASSWORD']
-DEFAULT_FROM_EMAIL = 'إنجاز <noreply@enjazstore.com>'
-SERVER_EMAIL = 'noreply@enjazstore.com'
+DEFAULT_FROM_EMAIL = 'إنجاز ستور <no-reply@enjaztechnology.com>'
+SERVER_EMAIL = 'no-reply@enjaztechnology.com'
+# Reply-To for outbound mail where a customer reply is expected (orders, returns,
+# marketing) — no-reply@ stays the sending/authenticated address either way.
+SUPPORT_EMAIL = secrets.get('SUPPORT_EMAIL', 'info@enjaztechnology.com')
 
 ADMINS = [('Khattab', 'khattabaljaily@gmail.com')]
 MANAGERS = ADMINS

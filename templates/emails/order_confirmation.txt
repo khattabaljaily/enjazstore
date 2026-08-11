@@ -17,5 +17,5 @@
 
 عرض طلبك: {{ order_url }}
 
-لأي استفسار، راسلنا على support@enjazstore.com
-إنجاز · السودان
+لأي استفسار، راسلنا على support@enjaztechnology.com
+إنجاز ستور · السودان

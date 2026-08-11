@@ -1,5 +1,5 @@
 /* ==========================================================================
-   إنجاز (Enjaz) — unified design system
+   إنجاز ستور (Enjaz Store) — unified design system
    One stylesheet for the entire storefront: base, layout, components, pages.
    ========================================================================== */
 
@@ -489,7 +489,7 @@ textarea:focus {
 }
 
 .brand__logo {
-  height: 36px;
+  height: 42px;
   width: auto;
   transition: transform var(--transition);
 }
@@ -502,7 +502,7 @@ textarea:focus {
 .brand__name {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: var(--color-navy);
   letter-spacing: -0.01em;
 }
@@ -577,7 +577,7 @@ textarea:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
+  width: 48px;
   border: none;
   border-radius: 999px;
   background: var(--gradient-primary);
@@ -2468,60 +2468,35 @@ textarea:focus {
   margin-bottom: 6px;
 }
 
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
-  margin-bottom: 40px;
-}
-
-.info-card {
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
+.meta-list {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: 22px;
   box-shadow: var(--shadow-sm);
+  padding: 4px 22px;
+  margin-bottom: 40px;
 }
 
-.info-card__icon {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-sm);
-  background: var(--color-primary-light);
-  color: var(--color-primary-dark);
+.meta-list__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  font-size: 0.9rem;
 }
 
-.info-card__icon svg {
-  width: 18px;
-  height: 18px;
+.meta-list__row + .meta-list__row {
+  border-top: 1px solid var(--color-border);
 }
 
-.info-card__body {
-  min-width: 0;
-  flex: 1;
-}
-
-.info-card__label {
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+.meta-list__label {
   color: var(--color-text-muted);
-  margin-bottom: 4px;
 }
 
-.info-card__value {
-  font-size: 0.95rem;
+.meta-list__value {
   font-weight: 600;
   color: var(--color-navy);
-  overflow-wrap: break-word;
+  text-align: left;
 }
 
 @media (max-width: 900px) {
@@ -2738,9 +2713,17 @@ textarea:focus {
    -------------------------------------------------------------------------- */
 
 .site-footer {
+  position: relative;
   background: var(--gradient-navy);
   color: rgba(255, 255, 255, 0.72);
   margin-top: 40px;
+}
+
+.site-footer::before {
+  content: "";
+  display: block;
+  height: 3px;
+  background: var(--gradient-accent);
 }
 
 .site-footer__top {
@@ -2753,7 +2736,7 @@ textarea:focus {
 
 .site-footer__brand .brand__name {
   color: var(--color-text-inverse);
-  font-size: 1.3rem;
+  font-size: 1.05rem;
 }
 
 .site-footer__tagline {
@@ -2769,7 +2752,7 @@ textarea:focus {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.5);
+  color: #d9b25c;
   margin-bottom: 16px;
 }
 
@@ -2786,11 +2769,11 @@ textarea:focus {
 }
 
 .footer-links a:hover {
-  color: var(--color-secondary);
+  color: #d9b25c;
 }
 
 .site-footer__bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(184, 137, 47, 0.25);
   padding-top: 22px;
   padding-bottom: 22px;
   display: flex;

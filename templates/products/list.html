@@ -2,26 +2,26 @@
 {% load static %}
 {% load price_tags %}
 
-{% block title %}{% if category %}{{ category.name }}{% else %}تسوّق{% endif %} · إنجاز{% endblock %}
+{% block title %}{% if category %}{{ category.name }}{% else %}تسوّق{% endif %} · إنجاز ستور{% endblock %}
 
-{% block meta_description %}{% if category %}{% if category.description %}{{ category.description }}{% else %}تسوّق {{ category.name }} من إنجاز، مع الدفع بالتحويل البنكي.{% endif %}{% elif search_query %}نتائج البحث عن "{{ search_query }}" في إنجاز.{% else %}تسوّق كامل كتالوج إنجاز — إلكترونيات، ملابس، منتجات منزلية، وأكثر، مع الدفع بالتحويل البنكي.{% endif %}{% endblock %}
-{% block og_title %}{% if category %}{{ category.name }}{% else %}تسوّق{% endif %} · إنجاز{% endblock %}
-{% block og_description %}{% if category %}{% if category.description %}{{ category.description }}{% else %}تسوّق {{ category.name }} من إنجاز، مع الدفع بالتحويل البنكي.{% endif %}{% elif search_query %}نتائج البحث عن "{{ search_query }}" في إنجاز.{% else %}تسوّق كامل كتالوج إنجاز — إلكترونيات، ملابس، منتجات منزلية، وأكثر، مع الدفع بالتحويل البنكي.{% endif %}{% endblock %}
+{% block meta_description %}{% if category %}{% if category.description %}{{ category.description }}{% else %}تسوّق {{ category.name }} من إنجاز ستور، مع الدفع بالتحويل البنكي.{% endif %}{% elif search_query %}نتائج البحث عن "{{ search_query }}" في إنجاز ستور.{% else %}تسوّق كامل كتالوج إنجاز ستور — إلكترونيات، ملابس، منتجات منزلية، وأكثر، مع الدفع بالتحويل البنكي.{% endif %}{% endblock %}
+{% block og_title %}{% if category %}{{ category.name }}{% else %}تسوّق{% endif %} · إنجاز ستور{% endblock %}
+{% block og_description %}{% if category %}{% if category.description %}{{ category.description }}{% else %}تسوّق {{ category.name }} من إنجاز ستور، مع الدفع بالتحويل البنكي.{% endif %}{% elif search_query %}نتائج البحث عن "{{ search_query }}" في إنجاز ستور.{% else %}تسوّق كامل كتالوج إنجاز ستور — إلكترونيات، ملابس، منتجات منزلية، وأكثر، مع الدفع بالتحويل البنكي.{% endif %}{% endblock %}
 
 {% block content %}
   {% if not category and not search_query %}
     <section class="hero">
       <div class="hero__content">
         <span class="hero__eyebrow">وصل حديثًا كل أسبوع</span>
-        <h1 class="hero__title">كل ما تحتاجه، في متجر واحد.</h1>
-        <p class="hero__subtitle">تصفّح كتالوجنا الكامل وأكمل الشراء بأمان عبر التحويل البنكي.</p>
+        <h1 class="hero__title">تسوّق براحتك.</h1>
+        <p class="hero__subtitle">منتجات مختارة، تصلك إلى السودان، والدفع بالتحويل البنكي فقط.</p>
         <div class="hero__actions">
           <a href="#catalog" class="btn btn-accent">ابدأ التسوّق</a>
         </div>
         <div class="hero__badges">
           <span class="hero__badge"><span class="hero__badge-icon">&check;</span> الدفع بتحويل بنكي عبر بنكك</span>
           <span class="hero__badge"><span class="hero__badge-icon">&check;</span> تسوّق آمن وموثوق</span>
-          <span class="hero__badge"><span class="hero__badge-icon">&check;</span> الشحن من خارج السودان (٢-٤ أسابيع)</span>
+          <span class="hero__badge"><span class="hero__badge-icon">&check;</span> الشحن من خارج السودان (2-4 أسابيع)</span>
         </div>
       </div>
     </section>

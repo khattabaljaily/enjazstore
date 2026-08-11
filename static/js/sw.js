@@ -1,4 +1,4 @@
-/* إنجاز Service Worker — app-shell only, no data caching */
+/* إنجاز ستور Service Worker — app-shell only, no data caching */
 const CACHE = 'enjaz-shell-v1';
 const SHELL = [
   '/static/css/style.css',

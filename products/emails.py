@@ -54,7 +54,7 @@ def send_low_stock_digest(variants):
     for _, admin_email in settings.ADMINS:
         _send(
             'low_stock_digest',
-            subject=f'تنبيه انخفاض المخزون — {len(variants)} صنف — إنجاز',
+            subject=f'تنبيه انخفاض المخزون — {len(variants)} صنف — إنجاز ستور',
             to_email=admin_email,
             context={'variants': variants, 'dashboard_url': dashboard_url},
         )
@@ -66,7 +66,7 @@ def send_back_in_stock(subscription):
 
     _send(
         'back_in_stock',
-        subject=f'{product.name} متوفر الآن من جديد — إنجاز',
+        subject=f'{product.name} متوفر الآن من جديد — إنجاز ستور',
         to_email=subscription.email,
         context={'variant': subscription.variant, 'product': product, 'product_url': product_url},
     )

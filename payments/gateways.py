@@ -45,7 +45,7 @@ class BankTransferGateway(BasePaymentGateway):
     """
 
     code = 'bank_transfer'
-    label = 'تحويل بنكي — بنك الخرطوم (بنكك)'
+    label = 'تحويل بنكي'
 
     def initiate_payment(self, order) -> Payment:
         payment, _ = Payment.objects.get_or_create(

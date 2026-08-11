@@ -27,7 +27,10 @@ def _send(subject, to_email, context):
     html_body = render_to_string('emails/marketing_broadcast.html', context)
     text_body = render_to_string('emails/marketing_broadcast.txt', context)
 
-    message = EmailMultiAlternatives(subject, text_body, settings.DEFAULT_FROM_EMAIL, [to_email])
+    message = EmailMultiAlternatives(
+        subject, text_body, settings.DEFAULT_FROM_EMAIL, [to_email],
+        reply_to=[settings.SUPPORT_EMAIL],
+    )
     message.attach_alternative(html_body, 'text/html')
 
     if _LOGO_BYTES is not None:

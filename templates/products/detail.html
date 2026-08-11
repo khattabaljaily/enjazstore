@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% load price_tags %}
 
-{% block title %}{{ product.name }} · إنجاز{% endblock %}
-{% block meta_description %}{% if product.description %}{{ product.description|truncatechars:155 }}{% else %}{{ product.name }} — متوفر الآن لدى إنجاز، يُشحن من خارج السودان.{% endif %}{% endblock %}
-{% block og_title %}{{ product.name }} · إنجاز{% endblock %}
-{% block og_description %}{% if product.description %}{{ product.description|truncatechars:155 }}{% else %}{{ product.name }} — متوفر الآن لدى إنجاز، يُشحن من خارج السودان.{% endif %}{% endblock %}
+{% block title %}{{ product.name }} · إنجاز ستور{% endblock %}
+{% block meta_description %}{% if product.description %}{{ product.description|truncatechars:155 }}{% else %}{{ product.name }} — متوفر الآن لدى إنجاز ستور، يُشحن من خارج السودان.{% endif %}{% endblock %}
+{% block og_title %}{{ product.name }} · إنجاز ستور{% endblock %}
+{% block og_description %}{% if product.description %}{{ product.description|truncatechars:155 }}{% else %}{{ product.name }} — متوفر الآن لدى إنجاز ستور، يُشحن من خارج السودان.{% endif %}{% endblock %}
 {% block og_type %}product{% endblock %}
 {% block og_image %}{% if product.main_image %}{{ request.scheme }}://{{ request.get_host }}{{ product.main_image.image.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
 
@@ -54,7 +54,7 @@
               {% endif %}
             </div>
           {% else %}
-            <div class="product-detail__gallery-placeholder">إنجاز</div>
+            <div class="product-detail__gallery-placeholder">إنجاز ستور</div>
           {% endif %}
         {% endwith %}
       </div>

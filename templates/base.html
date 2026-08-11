@@ -5,14 +5,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}إنجاز{% endblock %}</title>
-  <meta name="description" content="{% block meta_description %}تسوّق كل ما تحتاجه من إنجاز — إلكترونيات، ملابس، منتجات منزلية، وأكثر، مع الدفع بالتحويل البنكي.{% endblock %}">
+  <title>{% block title %}إنجاز ستور{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}تسوّق كل ما تحتاجه من إنجاز ستور — إلكترونيات، ملابس، منتجات منزلية، وأكثر، مع الدفع بالتحويل البنكي.{% endblock %}">
   <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
 
-  <meta property="og:site_name" content="إنجاز">
+  <meta property="og:site_name" content="إنجاز ستور">
   <meta property="og:type" content="{% block og_type %}website{% endblock %}">
-  <meta property="og:title" content="{% block og_title %}إنجاز{% endblock %}">
-  <meta property="og:description" content="{% block og_description %}تسوّق كل ما تحتاجه من إنجاز — إلكترونيات، ملابس، منتجات منزلية، وأكثر، مع الدفع بالتحويل البنكي.{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}إنجاز ستور{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}تسوّق كل ما تحتاجه من إنجاز ستور — إلكترونيات، ملابس، منتجات منزلية، وأكثر، مع الدفع بالتحويل البنكي.{% endblock %}">
   <meta property="og:url" content="{{ request.build_absolute_uri }}">
   <meta property="og:image" content="{% block og_image %}{% static 'img/logo/logo.png' %}{% endblock %}">
   <meta name="twitter:card" content="summary_large_image">
@@ -24,7 +24,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="إنجاز">
+  <meta name="apple-mobile-web-app-title" content="إنجاز ستور">
   <meta name="theme-color" content="#14120f">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,7 +35,7 @@
   {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "إنجاز",
+    "name": "إنجاز ستور",
     "url": "{{ request.scheme }}://{{ request.get_host }}/",
     "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo/logo.png' %}"
   }
@@ -46,8 +46,8 @@
   <header class="site-header">
     <div class="container site-header__bar">
       <a href="{% url 'products:list' %}" class="brand">
-        <img src="{% static 'img/logo/logo-gold.png' %}" alt="إنجاز" class="brand__logo">
-        <span class="brand__name">إنجاز</span>
+        <img src="{% static 'img/logo/logo-gold.png' %}" alt="إنجاز ستور" class="brand__logo">
+        <span class="brand__name">إنجاز ستور</span>
       </a>
 
       <div class="site-nav" id="site-nav">
@@ -135,10 +135,10 @@
     <div class="container site-footer__top">
       <div class="site-footer__brand">
         <a href="{% url 'products:list' %}" class="brand">
-          <img src="{% static 'img/logo/logo-white.png' %}" alt="إنجاز" class="brand__logo">
-          <span class="brand__name">إنجاز</span>
+          <img src="{% static 'img/logo/logo-white.png' %}" alt="إنجاز ستور" class="brand__logo">
+          <span class="brand__name">إنجاز ستور</span>
         </a>
-        <p class="site-footer__tagline">كل ما تحتاجه في مكان واحد — تسوّق أونلاين وادفع بسهولة عبر التحويل البنكي.</p>
+        <p class="site-footer__tagline">منتجات مختارة، تصلك إلى السودان، والدفع بالتحويل البنكي فقط.</p>
       </div>
 
       <div>
@@ -181,8 +181,8 @@
     </div>
 
     <div class="container site-footer__bottom">
-      <span>&copy; {% now "Y" %} إنجاز. جميع الحقوق محفوظة.</span>
-      <span>الدفع عبر التحويل البنكي — بنك الخرطوم (بنكك)</span>
+      <span>&copy; {% now "Y" %} إنجاز ستور. جميع الحقوق محفوظة.</span>
+      <span>الدفع عبر التحويل البنكي</span>
     </div>
   </footer>
 

@@ -43,7 +43,7 @@ RETURN_STATUS_COLORS = {
 }
 
 
-def _send(request, template_prefix, subject, to_email, context):
+def _send(request, template_prefix, subject, to_email, context, reply_to=None):
     if not to_email:
         return
 
@@ -51,7 +51,10 @@ def _send(request, template_prefix, subject, to_email, context):
     html_body = render_to_string(f'emails/{template_prefix}.html', context)
     text_body = render_to_string(f'emails/{template_prefix}.txt', context)
 
-    message = EmailMultiAlternatives(subject, text_body, settings.DEFAULT_FROM_EMAIL, [to_email])
+    message = EmailMultiAlternatives(
+        subject, text_body, settings.DEFAULT_FROM_EMAIL, [to_email],
+        reply_to=[reply_to] if reply_to else None,
+    )
     message.attach_alternative(html_body, 'text/html')
 
     if _LOGO_BYTES is not None:
@@ -78,7 +81,7 @@ def send_new_order_admin_alert(request, order):
     for _, admin_email in settings.ADMINS:
         _send(
             request, 'new_order_admin_alert',
-            subject=f'طلب جديد #{order.id} — {order.total} ج.س — إنجاز',
+            subject=f'طلب جديد #{order.id} — {order.total} ج.س — إنجاز ستور',
             to_email=admin_email,
             context={
                 'order': order,
@@ -94,7 +97,7 @@ def send_order_confirmation(request, order):
 
     _send(
         request, 'order_confirmation',
-        subject=f'تم تأكيد الطلب #{order.id} — إنجاز',
+        subject=f'تم تأكيد الطلب #{order.id} — إنجاز ستور',
         to_email=order.email,
         context={
             'order': order,
@@ -102,6 +105,7 @@ def send_order_confirmation(request, order):
             'order_url': order_url,
             'payment_method_label': gateway.label if gateway else '—',
         },
+        reply_to=settings.SUPPORT_EMAIL,
     )
 
 
@@ -110,7 +114,7 @@ def send_order_status_update(request, order):
 
     _send(
         request, 'order_status_update',
-        subject=f'الطلب #{order.id} — {order.get_status_display()} — إنجاز',
+        subject=f'الطلب #{order.id} — {order.get_status_display()} — إنجاز ستور',
         to_email=order.email,
         context={
             'order': order,
@@ -118,6 +122,7 @@ def send_order_status_update(request, order):
             'status_color': STATUS_COLORS.get(order.status, '#0f4c5c'),
             'status_message': STATUS_MESSAGES.get(order.status, 'Your order status has changed.'),
         },
+        reply_to=settings.SUPPORT_EMAIL,
     )
 
 
@@ -127,13 +132,14 @@ def send_return_request_received(request, return_request):
 
     _send(
         request, 'return_request_received',
-        subject=f'تم استلام طلب الإرجاع — الطلب #{order.id} — إنجاز',
+        subject=f'تم استلام طلب الإرجاع — الطلب #{order.id} — إنجاز ستور',
         to_email=order.email,
         context={
             'order': order,
             'return_request': return_request,
             'order_url': order_url,
         },
+        reply_to=settings.SUPPORT_EMAIL,
     )
 
 
@@ -143,7 +149,7 @@ def send_return_request_status_update(request, return_request):
 
     _send(
         request, 'return_request_status_update',
-        subject=f'تحديث طلب الإرجاع — الطلب #{order.id} — إنجاز',
+        subject=f'تحديث طلب الإرجاع — الطلب #{order.id} — إنجاز ستور',
         to_email=order.email,
         context={
             'order': order,
@@ -151,4 +157,5 @@ def send_return_request_status_update(request, return_request):
             'order_url': order_url,
             'status_color': RETURN_STATUS_COLORS.get(return_request.status, '#0f4c5c'),
         },
+        reply_to=settings.SUPPORT_EMAIL,
     )

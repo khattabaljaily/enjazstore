@@ -11,6 +11,7 @@ from .models import User
 
 
 class RegisterForm(UserCreationForm):
+    email = forms.EmailField(label='البريد الإلكتروني')
     privacy_consent = forms.BooleanField(
         required=True,
         label='أوافق على سياسة الخصوصية وأوافق على تخزين بياناتي واستخدامها على النحو الموضّح فيها.',

@@ -50,7 +50,7 @@ def _send(template_prefix, subject, to_email, context):
 def send_password_reset(user, reset_url):
     _send(
         'password_reset',
-        subject='إعادة تعيين كلمة المرور — إنجاز',
+        subject='إعادة تعيين كلمة المرور — إنجاز ستور',
         to_email=user.email,
         context={'user': user, 'reset_url': reset_url},
     )
@@ -59,7 +59,7 @@ def send_password_reset(user, reset_url):
 def send_email_verification(user, verify_url):
     _send(
         'verify_email',
-        subject='تأكيد البريد الإلكتروني — إنجاز',
+        subject='تأكيد البريد الإلكتروني — إنجاز ستور',
         to_email=user.email,
         context={'user': user, 'verify_url': verify_url},
     )

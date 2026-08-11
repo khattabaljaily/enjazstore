@@ -43,7 +43,7 @@
       '<div class="pwa-install-banner__content">' +
         '<div class="pwa-install-banner__icon">' + downloadIcon + '</div>' +
         '<div class="pwa-install-banner__text">' +
-          '<div class="pwa-install-banner__title">تثبيت تطبيق إنجاز</div>' +
+          '<div class="pwa-install-banner__title">تثبيت تطبيق إنجاز ستور</div>' +
           '<div class="pwa-install-banner__description">اضغط ' + shareIcon + ' ثم "إضافة إلى الشاشة الرئيسية"</div>' +
         '</div>' +
         '<button type="button" class="pwa-install-banner__close" aria-label="إغلاق">' + closeIcon + '</button>' +
@@ -51,7 +51,7 @@
       '<div class="pwa-install-banner__content">' +
         '<div class="pwa-install-banner__icon">' + downloadIcon + '</div>' +
         '<div class="pwa-install-banner__text">' +
-          '<div class="pwa-install-banner__title">تثبيت تطبيق إنجاز</div>' +
+          '<div class="pwa-install-banner__title">تثبيت تطبيق إنجاز ستور</div>' +
           '<div class="pwa-install-banner__description">ثبّت التطبيق على جهازك للوصول السريع</div>' +
         '</div>' +
         '<div class="pwa-install-banner__actions">' +
