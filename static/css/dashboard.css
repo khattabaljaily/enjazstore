@@ -48,7 +48,7 @@
 
 * , *::before, *::after { box-sizing: border-box; }
 
-html { font-size: 15px; }
+html { font-size: 13px; }
 
 body.dash-body {
   margin: 0;
