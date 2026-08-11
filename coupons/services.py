@@ -19,7 +19,7 @@ def get_valid_coupon_for_cart(cart):
         return None
     if not coupon.is_valid_now():
         return None
-    if coupon.minimum_order_amount and cart.total_price < coupon.minimum_order_amount:
+    if coupon.minimum_order_amount and cart.total_price_sdg < coupon.minimum_order_amount:
         return None
     return coupon
 
@@ -28,7 +28,7 @@ def calculate_discount(cart):
     coupon = get_valid_coupon_for_cart(cart)
     if not coupon:
         return Decimal('0')
-    return min(coupon.amount, cart.total_price)
+    return min(coupon.amount, cart.total_price_sdg)
 
 
 def apply_coupon_to_cart(cart, code):
@@ -41,7 +41,7 @@ def apply_coupon_to_cart(cart, code):
     if not coupon.is_valid_now():
         raise CouponError('كود الخصم هذا لم يعد صالحاً.')
 
-    if coupon.minimum_order_amount and cart.total_price < coupon.minimum_order_amount:
+    if coupon.minimum_order_amount and cart.total_price_sdg < coupon.minimum_order_amount:
         raise CouponError(f'يتطلب هذا الكود حد أدنى للطلب قدره {coupon.minimum_order_amount:.2f} ج.س.')
 
     cart.coupon_code = coupon.code

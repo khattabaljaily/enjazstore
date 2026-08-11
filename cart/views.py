@@ -13,5 +13,5 @@ def cart_detail(request):
         'cart': cart,
         'coupon': coupon,
         'discount_amount': discount,
-        'total_after_discount': cart.total_price - discount,
+        'total_after_discount': cart.total_price_sdg - discount,
     })

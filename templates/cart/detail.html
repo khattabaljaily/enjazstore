@@ -40,7 +40,7 @@
                       </div>
                     </div>
                   </td>
-                  <td data-label="السعر">{{ item.variant.price|money }} ج.س</td>
+                  <td data-label="السعر">{{ item.variant.price|sdg:exchange_rate }} ج.س</td>
                   <td data-label="الكمية">
                     <div class="qty-stepper">
                       <button type="button" data-qty-decrease>&minus;</button>
@@ -48,7 +48,7 @@
                       <button type="button" data-qty-increase>&plus;</button>
                     </div>
                   </td>
-                  <td class="cart-item__subtotal" data-label="المجموع الفرعي">{{ item.subtotal|money }} ج.س</td>
+                  <td class="cart-item__subtotal" data-label="المجموع الفرعي">{{ item.subtotal_sdg|money }} ج.س</td>
                   <td class="cart-item__actions"><button type="button" class="btn-danger" data-remove-item>إزالة</button></td>
                 </tr>
               {% endfor %}
@@ -64,7 +64,7 @@
           </div>
           <div class="summary-row">
             <span>المجموع الفرعي</span>
-            <span id="summary-subtotal">{{ cart.total_price|money }} ج.س</span>
+            <span id="summary-subtotal">{{ cart.total_price_sdg|money }} ج.س</span>
           </div>
           <div class="summary-row" id="summary-discount-row" {% if not coupon %}style="display:none"{% endif %}>
             <span>الخصم <span id="summary-coupon-code">{% if coupon %}({{ coupon.code }}){% endif %}</span></span>

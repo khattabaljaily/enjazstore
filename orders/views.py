@@ -12,6 +12,7 @@ from dashboard.models import SiteSettings
 from payments.gateways import PaymentGatewayError
 from payments.registry import get_gateway
 from products.models import Variant
+from products.pricing import get_exchange_rate, to_sdg
 
 from .emails import (
     send_new_order_admin_alert,
@@ -53,9 +54,11 @@ def checkout(request):
         if form.is_valid():
             try:
                 with transaction.atomic():
+                    rate = get_exchange_rate()
                     order = form.save(commit=False)
                     if request.user.is_authenticated:
                         order.user = request.user
+                    order.exchange_rate = rate
                     order.save()
 
                     for item in cart.items.select_related('variant__product'):
@@ -70,7 +73,7 @@ def checkout(request):
                             variant=variant,
                             product_name=variant.product.name,
                             variant_label=' / '.join(p for p in (variant.size, variant.color) if p),
-                            unit_price=variant.price,
+                            unit_price=to_sdg(variant.price, rate),
                             quantity=item.quantity,
                             condition=variant.product.condition,
                             warranty_days=variant.product.warranty_days,
@@ -124,7 +127,7 @@ def checkout(request):
         'cart': cart,
         'coupon': coupon,
         'discount_amount': discount,
-        'total_after_discount': cart.total_price - discount,
+        'total_after_discount': cart.total_price_sdg - discount,
         'site_settings': SiteSettings.load(),
     })
 

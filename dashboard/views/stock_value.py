@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
 
 from products.models import Variant
+from products.pricing import get_exchange_rate, to_sdg
 
 from ..permissions import ManagerRequiredMixin
 
@@ -17,10 +18,13 @@ class StockValueReportView(ManagerRequiredMixin, TemplateView):
             .order_by('product__category__name', 'product__name', 'size', 'color')
         )
 
+        rate = get_exchange_rate()
         groups_by_category = {}
         grand_total = 0
         for variant in variants:
-            price = variant.price
+            # Variant.price is USD (catalog reference price); this report values
+            # current inventory in real money, so convert to SDG here.
+            price = to_sdg(variant.price, rate)
             total = variant.stock * price
             grand_total += total
 

@@ -22,7 +22,7 @@
       "@type": "Offer",
       "url": "{{ request.build_absolute_uri }}",
       "priceCurrency": "SDG",
-      "price": "{{ product.price }}",
+      "price": "{{ product.price|sdg_raw:exchange_rate }}",
       "availability": "{% if product.total_stock > 0 %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}"
     }
   }
@@ -73,7 +73,7 @@
             <span class="text-muted" style="font-size:0.88rem;">{{ rating_summary.average|floatformat:1 }} ({{ rating_summary.count }} تقييم)</span>
           </a>
         {% endif %}
-        <div class="product-detail__price" id="detail-price">{{ product.price|money }} ج.س</div>
+        <div class="product-detail__price" id="detail-price">{{ product.price|sdg:exchange_rate }} ج.س</div>
         <p>{{ product.description }}</p>
 
         {% if product.variants.all %}
@@ -81,7 +81,7 @@
             <label for="variant-select">اختر خيارًا</label>
             <select id="variant-select">
               {% for variant in product.variants.all %}
-                <option value="{{ variant.id }}" data-price="{{ variant.price }}" data-stock="{{ variant.stock }}"
+                <option value="{{ variant.id }}" data-price="{{ variant.price|sdg_raw:exchange_rate }}" data-stock="{{ variant.stock }}"
                   {% if not variant.in_stock %}disabled{% endif %}>
                   {% if variant.size or variant.color %}{{ variant.size }} {{ variant.color }}{% else %}{{ variant.sku }}{% endif %}
                   {% if not variant.in_stock %} — غير متوفر{% endif %}

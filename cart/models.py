@@ -23,6 +23,14 @@ class Cart(models.Model):
         return sum((item.subtotal for item in self.items.select_related('variant__product')), start=0)
 
     @property
+    def total_price_sdg(self):
+        """total_price (USD) converted to SDG at the current exchange rate — this,
+        not total_price, is what customers see and what coupon math compares
+        against, since Coupon.amount is a fixed SDG figure."""
+        from products.pricing import to_sdg
+        return to_sdg(self.total_price)
+
+    @property
     def total_items(self):
         return sum(item.quantity for item in self.items.all())
 
@@ -42,3 +50,8 @@ class CartItem(models.Model):
     @property
     def subtotal(self):
         return self.variant.price * self.quantity
+
+    @property
+    def subtotal_sdg(self):
+        from products.pricing import to_sdg
+        return to_sdg(self.subtotal)

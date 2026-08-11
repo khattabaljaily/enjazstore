@@ -10,7 +10,7 @@ from .models import Cart, CartItem
 class CartItemSerializer(serializers.ModelSerializer):
     variant = VariantSerializer(read_only=True)
     product_name = serializers.CharField(source='variant.product.name', read_only=True)
-    subtotal = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    subtotal = serializers.DecimalField(source='subtotal_sdg', max_digits=10, decimal_places=2, read_only=True)
 
     class Meta:
         model = CartItem
@@ -19,7 +19,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 class CartSerializer(serializers.ModelSerializer):
     items = CartItemSerializer(many=True, read_only=True)
-    total_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    total_price = serializers.DecimalField(source='total_price_sdg', max_digits=10, decimal_places=2, read_only=True)
     total_items = serializers.IntegerField(read_only=True)
     coupon_code = serializers.SerializerMethodField()
     discount_amount = serializers.SerializerMethodField()
@@ -40,4 +40,4 @@ class CartSerializer(serializers.ModelSerializer):
         return calculate_discount(cart)
 
     def get_total_after_discount(self, cart):
-        return cart.total_price - calculate_discount(cart)
+        return cart.total_price_sdg - calculate_discount(cart)

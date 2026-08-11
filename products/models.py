@@ -70,7 +70,10 @@ class Product(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=220, unique=True, blank=True)
     description = models.TextField(blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    # USD, not SDG — converted to SDG for display/checkout using
+    # SiteSettings.usd_to_sdg_rate (see products/pricing.py), so it doesn't
+    # need repricing every time the exchange rate moves.
+    price = models.DecimalField(max_digits=10, decimal_places=2, help_text='بالدولار الأمريكي (USD)')
     condition = models.CharField(max_length=10, choices=Condition.choices, default=Condition.NEW)
     warranty_days = models.PositiveIntegerField(
         null=True, blank=True,
@@ -168,7 +171,10 @@ class Variant(models.Model):
     color = models.CharField(max_length=50, blank=True)
     sku = models.CharField(max_length=64, unique=True)
     stock = models.PositiveIntegerField(default=0)
-    price_override = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    price_override = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True,
+        help_text='بالدولار الأمريكي (USD). اتركه فارغًا لاستخدام سعر المنتج.',
+    )
 
     class Meta:
         unique_together = ('product', 'size', 'color')

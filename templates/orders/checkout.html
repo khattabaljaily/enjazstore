@@ -71,12 +71,12 @@
         {% for item in cart.items.all %}
           <div class="order-line">
             <span class="order-line__label">{{ item.quantity }} &times; {{ item.variant.product.name }}{% if item.variant.size or item.variant.color %} ({{ item.variant.size }} {{ item.variant.color }}){% endif %}</span>
-            <span class="order-line__amount">{{ item.subtotal|money }} ج.س</span>
+            <span class="order-line__amount">{{ item.subtotal_sdg|money }} ج.س</span>
           </div>
         {% endfor %}
         <div class="summary-row">
           <span>المجموع الفرعي</span>
-          <span>{{ cart.total_price|money }} ج.س</span>
+          <span>{{ cart.total_price_sdg|money }} ج.س</span>
         </div>
         {% if coupon %}
           <div class="summary-row">

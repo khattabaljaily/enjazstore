@@ -147,7 +147,7 @@ class SiteSettingsForm(forms.ModelForm):
         fields = (
             'maintenance_mode', 'coming_soon_message', 'ads_enabled',
             'bank_name', 'bank_account_name', 'bank_account_number', 'bank_transfer_note',
-            'delivery_estimate',
+            'delivery_estimate', 'usd_to_sdg_rate',
         )
         widgets = {
             'coming_soon_message': forms.Textarea(attrs={'rows': 4}),

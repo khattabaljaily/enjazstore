@@ -48,7 +48,7 @@
               </td>
               <td class="wrap" data-label="الاسم">{{ product.name }}</td>
               <td data-label="القسم">{{ product.category.name }}</td>
-              <td data-label="السعر">ج.س {{ product.price|money }}</td>
+              <td data-label="السعر">${{ product.price|money }}</td>
               <td data-label="المخزون">{{ product.total_stock }}</td>
               <td data-label="الحالة">
                 {% if product.is_active %}
