@@ -157,6 +157,24 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Content-hashed filenames (e.g. favicon.3b1a2c9d.png) so browsers fetch a
+# fresh copy whenever a static file's content changes, instead of serving a
+# stale cached one until a hard refresh. Manifest storage only resolves
+# against collectstatic's output in STATIC_ROOT, which runserver's DEBUG
+# static serving never uses — so plain storage is kept for local dev, where
+# {% static %} needs to resolve straight to STATICFILES_DIRS.
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': (
+            'django.contrib.staticfiles.storage.StaticFilesStorage' if DEBUG else
+            'whitenoise.storage.CompressedManifestStaticFilesStorage'
+        ),
+    },
+}
+
 # Media files (user uploads: product images, etc.)
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
