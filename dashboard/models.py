@@ -34,7 +34,7 @@ class SiteSettings(models.Model):
     # update it whenever the rate changes. Defaults to 0 so a forgotten rate
     # shows as visibly broken (0 ج.س) rather than silently wrong.
     usd_to_sdg_rate = models.DecimalField(
-        max_digits=10, decimal_places=4, default=0,
+        max_digits=10, decimal_places=2, default=0,
         help_text='كم جنيهًا سودانيًا يساوي الدولار الواحد الآن. حدّثه كل ما تغيّر السعر.',
     )
 

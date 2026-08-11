@@ -39,7 +39,7 @@ class Order(models.Model):
     # USD-to-SDG rate in effect when this order's item prices were converted
     # (see OrderItem.unit_price) — kept only for admin reference/reconciliation,
     # since unit_price/total are already the frozen SDG amounts either way.
-    exchange_rate = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
+    exchange_rate = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     tracking_carrier = models.CharField(max_length=100, blank=True)
     tracking_number = models.CharField(max_length=100, blank=True)
