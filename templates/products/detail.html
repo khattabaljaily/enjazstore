@@ -185,6 +185,14 @@
     const btn = document.getElementById('add-to-cart-btn');
     const notifyBlock = document.getElementById('notify-stock-block');
     const notifyBtn = document.getElementById('notify-stock-btn');
+    const priceEl = document.getElementById('detail-price');
+
+    function updatePrice() {
+      if (!select || !priceEl) return;
+      const opt = select.options[select.selectedIndex] || select.options[0];
+      if (!opt || !opt.dataset.price) return;
+      priceEl.textContent = `${window.EnjazCart.formatPrice(opt.dataset.price)} ج.س`;
+    }
 
     function updateStockNote() {
       if (!select) return;
@@ -211,7 +219,9 @@
 
     if (select) {
       select.addEventListener('change', updateStockNote);
+      select.addEventListener('change', updatePrice);
       updateStockNote();
+      updatePrice();
     }
 
     if (btn) {
