@@ -289,6 +289,15 @@ LOGGING = {
 # end. Left off under DEBUG so local http:// development still works.
 
 if not DEBUG:
+    # Needed whenever TLS is terminated in front of the app (nginx, Caddy,
+    # Cloudflare, a load balancer, ...) — otherwise Django never sees the
+    # request as secure and redirects every request to https://, which the
+    # proxy terminates and forwards back over http://, looping forever
+    # (ERR_TOO_MANY_REDIRECTS). Only safe if that proxy is the one setting
+    # this header — if the app is reachable directly (no proxy in front),
+    # remove this, since a client could otherwise spoof the header and skip
+    # the redirect entirely.
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
